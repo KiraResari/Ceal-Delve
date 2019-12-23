@@ -3,40 +3,55 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import javax.swing.text.AbstractDocument.BranchElement;
+import java.io.IOException;
 
 
 public class DelveClient {
-
+	
+	String text_buffer;
+	Socket server;
+	String server_address = "127.0.0.1";
+	int server_port = 1337;
+	
+	InputStream server_input_stream;
+	BufferedReader server_input;
+	PrintWriter client_output;
+	BufferedReader user_input;
+	
 	public static void main(String[] args) {
-		Socket server = null;
+		DelveClient s = new DelveClient();
+		s.start_client();
 		
-		String server_address = "127.0.0.1";
-		int server_port = 1337;
+	}
+
+	public void start_client() {
+		server = null;
 		
 		try {
 			//Connect to the server
 			server = new Socket(server_address, server_port);
 			
 			//The server input stream
-			InputStream server_input_stream = server.getInputStream();
+			server_input_stream = server.getInputStream();
 			
 			//The text that is being received from the server
-			BufferedReader server_input = new BufferedReader(new InputStreamReader(server_input_stream));
+			server_input = new BufferedReader(new InputStreamReader(server_input_stream));
 			
 			//The text that is sent to the server
-			PrintWriter client_output = new PrintWriter(server.getOutputStream());
+			client_output = new PrintWriter(server.getOutputStream());
 			
 			//The user input
-			BufferedReader user_input = new BufferedReader(new InputStreamReader(System.in));
+			user_input = new BufferedReader(new InputStreamReader(System.in));
 			
 			//Await welcome message
-			String text_buffer;
-			while(server_input.ready()) {
-				text_buffer = server_input.readLine();
-				System.out.println(text_buffer);
-			}
+			await_server_message_single();
+			send_over();
+			
+			//Await Name entry
+			await_server_message_single();
+			get_user_input();
+			await_server_message_single();
+			
 			
 			while(true) {
 				//Get user input
@@ -51,7 +66,6 @@ public class DelveClient {
 				System.out.println(server_input.readLine());
 			}
 			
-			
 		}
 		
 		catch (java.net.ConnectException e){
@@ -63,6 +77,51 @@ public class DelveClient {
 			e.printStackTrace();
 		}
 
+	}
+	
+	//This function sends an "over"-message to the server, signaling that the client is ready for the next request
+	public void send_over() {
+		client_output.println("");
+		client_output.flush();
+	}
+	
+	//This function awaits a single message from the server and prints it
+	public void await_server_message_single() throws IOException, InterruptedException {
+		while(!server_input.ready()) {
+			Thread.sleep(100);
+		}
+		while(server_input.ready()) {
+			text_buffer = server_input.readLine();
+			System.out.println(text_buffer);
+		}
+	}
+	
+	//This function awaits multiple messages from the server and prints them until an <OVER> message is sent
+	public void await_server_message_multi() throws IOException, InterruptedException {
+		while(!server_input.ready()) {
+			Thread.sleep(100);
+		}
+		while(server_input.ready()) {
+			text_buffer = server_input.readLine();
+			System.out.println(text_buffer);
+		}
+	}
+	
+	//Requests user input and sends it to the server
+	public void get_user_input() {
+		try {
+			//Get user input
+			System.out.print("> ");
+			text_buffer = user_input.readLine();
+			
+			//Send input to server
+			client_output.println(text_buffer);
+			client_output.flush();
+		}
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
+		}
 	}
 
 }
