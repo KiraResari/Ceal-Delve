@@ -3,8 +3,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.io.IOException;
-
 
 public class DelveClient {
 	
@@ -45,17 +43,23 @@ public class DelveClient {
 			
 			//Await welcome message
 			await_server_message_single();
-			send_over();
+			send_string_terminator();
 			
 			//Await Name entry
 			await_server_message_single();
 			get_user_input();
-			await_server_message_single();
+			await_server_message_multi();
 			
+			
+			//Echo Phase
+			System.out.println("You have reached the end of the delve.");
+			System.out.println("A great, empty cave unfolds before your eyes.");
+			System.out.println("Surely there's a great echo here.");
+			System.out.println("What do you want to call out?");
 			
 			while(true) {
 				//Get user input
-				System.out.println("What do you want to do? ");
+				System.out.print("> ");
 				text_buffer = user_input.readLine();
 				
 				//Send input to server
@@ -64,6 +68,9 @@ public class DelveClient {
 				
 				//Await server answer and print it
 				System.out.println(server_input.readLine());
+				
+				System.out.println("That was nice.");
+				System.out.println("What do you want to call out?");
 			}
 			
 		}
@@ -79,31 +86,50 @@ public class DelveClient {
 
 	}
 	
-	//This function sends an "over"-message to the server, signaling that the client is ready for the next request
-	public void send_over() {
+	//This function sends a String Terminator to the server, signaling that the client is ready for the next request
+	public void send_string_terminator() {
 		client_output.println("");
 		client_output.flush();
 	}
 	
 	//This function awaits a single message from the server and prints it
-	public void await_server_message_single() throws IOException, InterruptedException {
-		while(!server_input.ready()) {
-			Thread.sleep(100);
+	public void await_server_message_single() {
+		try {
+			while(!server_input.ready()) {
+				Thread.sleep(100);
+			}
+			while(server_input.ready()) {
+				text_buffer = server_input.readLine();
+				System.out.println(text_buffer);
+			}
 		}
-		while(server_input.ready()) {
-			text_buffer = server_input.readLine();
-			System.out.println(text_buffer);
+		
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
 		}
 	}
 	
-	//This function awaits multiple messages from the server and prints them until an <OVER> message is sent
-	public void await_server_message_multi() throws IOException, InterruptedException {
-		while(!server_input.ready()) {
-			Thread.sleep(100);
+	//This function awaits multiple messages from the server and prints them until a String Terminator is sent
+	public void await_server_message_multi() {
+		try {
+			while(true) {
+				while(!server_input.ready()) {
+					Thread.sleep(100);
+				}
+				while(server_input.ready()) {
+					text_buffer = server_input.readLine();
+					if(text_buffer.contentEquals("")){
+						return;
+					}
+					System.out.println(text_buffer);
+				}
+			}
 		}
-		while(server_input.ready()) {
-			text_buffer = server_input.readLine();
-			System.out.println(text_buffer);
+		
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
 		}
 	}
 	

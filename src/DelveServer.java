@@ -90,7 +90,7 @@ public class DelveServer {
 		//Echo
 		try {
 			while((text_buffer = input_from_client.readLine()) != null) {
-				text_buffer = "Re: " + text_buffer;
+				text_buffer = text_buffer + "... " + text_buffer + "...... " + text_buffer + "......... ";
 				output_to_client.println(text_buffer);
 				output_to_client.flush();
 				System.out.println("Sent message: " + text_buffer);
@@ -105,7 +105,7 @@ public class DelveServer {
 		}
 	}
 	
-	//Waits for the client to send an over-message before proceeding
+	//Waits for the client to send a String Terminator before proceeding
 	public void await_over() throws IOException{
 		System.out.println("Waiting for over-message...");
 		while(true) {
@@ -131,6 +131,8 @@ public class DelveServer {
 		
 		//Greets the player character
 		send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!");
+		send_message_to_client("It is a fantastic world full of marvels, but also dangers.");
+		send_message_to_client("");
 		
 	}
 	
