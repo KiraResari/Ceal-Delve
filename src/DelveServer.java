@@ -44,6 +44,9 @@ public class DelveServer {
 			String client_address = client.getInetAddress().getHostAddress() + client.getInetAddress().getHostName();
 			System.out.println("Incoming client from: " + client_address);
 			
+			//Sends welcome message
+			welcome_message(client);
+			
 			try {
 				BufferedReader text_input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 				PrintWriter text_output = new PrintWriter(client.getOutputStream());
@@ -65,6 +68,22 @@ public class DelveServer {
 			}
 			
 		}
+	}
+	
+	public void welcome_message(Socket client) throws IOException{
+		PrintWriter text_output = new PrintWriter(client.getOutputStream());
+		String text_buffer;
+		text_output.println("        //------------------------//");
+		text_output.println("       // Welcome to...          //");
+		text_output.println("      //                        //");
+		text_output.println("     // THE CHRONICLES OF CEAL //");
+		text_output.println("    //          ~             //");
+		text_output.println("   //     DEEPER DELVING     //");
+		text_output.println("  //                        //");
+		text_output.println(" //         by Kira Resari //");
+		text_output.println("//------------------------//");
+		text_output.flush();
+		System.out.println("Sent welcome message");
 	}
 
 }
