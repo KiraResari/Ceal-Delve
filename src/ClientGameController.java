@@ -45,6 +45,7 @@ public class ClientGameController {
 	
 	public void echo_phase() {
 		//Echo Phase
+		System.out.println();
 		System.out.println("You have reached the end of the delve.");
 		System.out.println("A great, empty cave unfolds before your eyes.");
 		System.out.println("Surely there's a great echo here.");

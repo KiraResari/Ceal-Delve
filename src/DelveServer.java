@@ -34,7 +34,6 @@ public class DelveServer {
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void run_server(ServerSocket server) throws IOException{
@@ -49,12 +48,6 @@ public class DelveServer {
 			//Initiate Game for that client
 			ServerGameController game_controller = new ServerGameController(client, version);
 			game_controller.game_init();
-			
-			
-			
 		}
 	}
-	
-
-
 }

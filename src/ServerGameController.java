@@ -25,21 +25,6 @@ public class ServerGameController {
 		}
 	}
 	
-	public void welcome_message(Socket client) throws IOException{
-		send_message_to_client("        //------------------------//", true);
-		send_message_to_client("       // Welcome to...          //", true);
-		send_message_to_client("      //                        //", true);
-		send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
-		send_message_to_client("    //          ~             //", true);
-		send_message_to_client("   //     DEEPER DELVING     //", true);
-		send_message_to_client("  //                        //", true);
-		send_message_to_client(" //         by Kira Resari //", true);
-		send_message_to_client("//------------------------//", true);
-		send_message_to_client("Server Version " + version, true);
-		send_message_to_client("", false);
-		System.out.println("Sent welcome message");
-	}
-	
 	//The functions that get carried out at the beginning of the game
 	public void game_init() throws IOException{
 		//Sends welcome message
@@ -48,10 +33,13 @@ public class ServerGameController {
 		//Wait for the over message
 		await_over();
 		
-		//Asks the character name
-		ask_character_name();
+		character_creation();
 		
-		//Echo
+		//Echo phase at the end of the game
+		echo_phase();
+	}
+
+	public void echo_phase() {
 		while(true) {
 			try {
 				Communication reply = await_client_reply();
@@ -69,6 +57,21 @@ public class ServerGameController {
 		}
 	}
 	
+	public void welcome_message(Socket client) throws IOException{
+		send_message_to_client("        //------------------------//", true);
+		send_message_to_client("       // Welcome to...          //", true);
+		send_message_to_client("      //                        //", true);
+		send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
+		send_message_to_client("    //          ~             //", true);
+		send_message_to_client("   //     DEEPER DELVING     //", true);
+		send_message_to_client("  //                        //", true);
+		send_message_to_client(" //         by Kira Resari //", true);
+		send_message_to_client("//------------------------//", true);
+		send_message_to_client("Server Version " + version, true);
+		send_message_to_client("", false);
+		System.out.println("Sent welcome message");
+	}
+	
 	//Waits for the client to send a String Terminator before proceeding
 	public void await_over() throws IOException{
 		System.out.println("Waiting for over-message...");
@@ -79,6 +82,14 @@ public class ServerGameController {
 			}
 		}
 		System.out.println("Received Over-message. Continuing.");
+	}
+	
+	public void character_creation() {
+		//Asks for a character name
+		ask_character_name();
+		
+		//Asks for the character's favorite element
+		//TODO: Continue here
 	}
 	
 	//Asks for the character name
@@ -120,14 +131,7 @@ public class ServerGameController {
 			e.printStackTrace();
 		}
 		System.out.println("Sent message to client: " + message);
-		
-		/*
-		output_to_client.println(message);
-		output_to_client.flush();
-		System.out.println("Sent message:" + message);
-		*/
 	}
-	
 	
 	//Awaits a reply from the client
 	public Communication await_client_reply() {

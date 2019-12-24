@@ -19,7 +19,6 @@ public class DelveClient {
 	public static void main(String[] args) {
 		DelveClient s = new DelveClient();
 		s.start_client();
-		
 	}
 
 	public void start_client() {
@@ -34,7 +33,6 @@ public class DelveClient {
 			System.out.println("Client Version " + version);
 			
 			game_controller.game_init();
-			
 		}
 		
 		catch (java.net.ConnectException e){
@@ -45,6 +43,5 @@ public class DelveClient {
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}
-
 	}
 }
