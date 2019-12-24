@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -10,12 +12,14 @@ public class DelveClient {
 	Socket server;
 	String server_address = "127.0.0.1";
 	int server_port = 1337;
-	String version = "0.3";
+	String version = "0.4";
 	
 	InputStream server_input_stream;
 	BufferedReader server_input;
 	PrintWriter client_output;
 	BufferedReader user_input;
+	ObjectInputStream object_input_from_server;
+	ObjectOutputStream object_output_to_server;
 	
 	public static void main(String[] args) {
 		DelveClient s = new DelveClient();
@@ -39,6 +43,10 @@ public class DelveClient {
 			//The text that is sent to the server
 			client_output = new PrintWriter(server.getOutputStream());
 			
+			object_output_to_server = new ObjectOutputStream(server.getOutputStream());
+			object_input_from_server = new ObjectInputStream(server.getInputStream());
+			
+			
 			//The user input
 			user_input = new BufferedReader(new InputStreamReader(System.in));
 			
@@ -49,9 +57,9 @@ public class DelveClient {
 			send_string_terminator();
 			
 			//Await Name entry
-			await_server_message_single();
+			await_server_communication();
 			get_user_input();
-			await_server_message_multi();
+			await_server_communication();
 			
 			
 			//Echo Phase
@@ -61,16 +69,8 @@ public class DelveClient {
 			System.out.println("What do you want to call out?");
 			
 			while(true) {
-				//Get user input
-				System.out.print("> ");
-				text_buffer = user_input.readLine();
-				
-				//Send input to server
-				client_output.println(text_buffer);
-				client_output.flush();
-				
-				//Await server answer and print it
-				System.out.println(server_input.readLine());
+				get_user_input();
+				await_server_communication();
 				
 				System.out.println("That was nice.");
 				System.out.println("What do you want to call out?");
@@ -91,8 +91,15 @@ public class DelveClient {
 	
 	//This function sends a String Terminator to the server, signaling that the client is ready for the next request
 	public void send_string_terminator() {
-		client_output.println("");
-		client_output.flush();
+		try {
+		Communication comm = new Communication(CommunicationTypes.over, "");
+			object_output_to_server.writeObject(comm);
+			object_output_to_server.flush();
+		}
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
+		}
 	}
 	
 	//This function awaits a single message from the server and prints it
@@ -112,6 +119,8 @@ public class DelveClient {
 			e.printStackTrace();
 		}
 	}
+	
+
 	
 	//This function awaits multiple messages from the server and prints them until a String Terminator is sent
 	public void await_server_message_multi() {
@@ -136,6 +145,34 @@ public class DelveClient {
 		}
 	}
 	
+	//Handles incoming communications from the server
+	public void await_server_communication() {
+		try {
+			Communication comm = (Communication) object_input_from_server.readObject();
+			
+			if (comm.type.equals(CommunicationTypes.message)) {
+				handle_server_message(comm);
+			}
+			else if (comm.type.equals(CommunicationTypes.message_autoscroll)) {
+				handle_server_message_autoscroll(comm);
+			}
+		} 
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
+		}	
+	}
+	
+	public void handle_server_message(Communication comm) {
+		System.out.println(comm.message);
+	}
+	
+	
+	public void handle_server_message_autoscroll(Communication comm) {
+		System.out.println(comm.message);
+		await_server_communication();
+	}
+	
 	//Requests user input and sends it to the server
 	public void get_user_input() {
 		try {
@@ -143,9 +180,10 @@ public class DelveClient {
 			System.out.print("> ");
 			text_buffer = user_input.readLine();
 			
-			//Send input to server
-			client_output.println(text_buffer);
-			client_output.flush();
+			Communication comm = new Communication(CommunicationTypes.message, text_buffer);
+			object_output_to_server.writeObject(comm);
+			object_output_to_server.flush();
+			
 		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);

@@ -13,7 +13,7 @@ public class DelveServer {
 	Socket client;
 	BufferedReader input_from_client;
 	PrintWriter output_to_client;
-	String version = "0.3";
+	String version = "0.4";
 
 	public static void main(String[] args) {
 		DelveServer s = new DelveServer();

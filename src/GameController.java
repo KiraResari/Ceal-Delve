@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -11,6 +13,9 @@ public class GameController {
 	BufferedReader input_from_client;
 	PrintWriter output_to_client;
 	String version;
+	ObjectInputStream object_input_from_client;
+	ObjectOutputStream object_output_to_client;
+	
 
 	public GameController(Socket incoming_client, String incoming_version) {
 		client = incoming_client;
@@ -18,6 +23,8 @@ public class GameController {
 		try {
 			input_from_client = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			output_to_client = new PrintWriter(client.getOutputStream());
+			object_output_to_client = new ObjectOutputStream(client.getOutputStream());
+			object_input_from_client = new ObjectInputStream(client.getInputStream());
 		} 
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
@@ -53,20 +60,20 @@ public class GameController {
 		ask_character_name();
 		
 		//Echo
-		try {
-			while((text_buffer = input_from_client.readLine()) != null) {
-				text_buffer = text_buffer + "... " + text_buffer + "...... " + text_buffer + "......... ";
-				output_to_client.println(text_buffer);
-				output_to_client.flush();
-				System.out.println("Sent message: " + text_buffer);
+		while(true) {
+			try {
+				Communication reply = await_client_reply();
+				if(reply == null) {
+					break;
+				}
+				String message = reply.message;
+				send_message_to_client(message + "... " + message + "...... " + message + "......... ", false);
+			
 			}
-		}
-		catch (java.net.SocketException e){
-			System.out.println("Client disconnected");
-		}
-		catch (Exception e){
-			System.out.println("Runtime Error: " + e);
-			e.printStackTrace();
+			catch (Exception e){
+				System.out.println("Runtime Error: " + e);
+				e.printStackTrace();
+			}	
 		}
 	}
 	
@@ -74,8 +81,8 @@ public class GameController {
 	public void await_over() throws IOException{
 		System.out.println("Waiting for over-message...");
 		while(true) {
-			await_client_reply();
-			if(text_buffer.contentEquals("")){
+			Communication reply = await_client_reply();
+			if(reply.type.equals(CommunicationTypes.over)){
 				break;
 			}
 		}
@@ -86,48 +93,67 @@ public class GameController {
 	public void ask_character_name() {
 		// Sends the question
 		Character player_character = new Character();
-		send_message_to_client("What is your name?");
+		send_message_to_client("What is your name?", false);
 		
 		// Waits for a reply
-		await_client_reply();
+		Communication reply = await_client_reply();
 		
 		//Records the character name
-		player_character.name = text_buffer;
+		player_character.name = reply.message;
 		
 		//Greets the player character
-		send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!");
-		send_message_to_client("It is a fantastic world full of marvels, but also dangers.");
-		send_message_to_client("");
+		send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!", true);
+		send_message_to_client("It is a fantastic world full of marvels, but also dangers.", false);
 		
 	}
 	
 	//Sends a message to the client
-	public void send_message_to_client(String message) {
+	public void send_message_to_client(String message, Boolean autoscroll) {
+		String type;
+		if(autoscroll) {
+			type = CommunicationTypes.message_autoscroll;
+		}
+		else {
+			type = CommunicationTypes.message;
+		}
+		
+		Communication comm = new Communication(type, message);
+		
+		try {
+			object_output_to_client.writeObject(comm);
+			object_output_to_client.flush();
+		} 
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
+		}
+		System.out.println("Sent message to client: " + message);
+		
+		/*
 		output_to_client.println(message);
 		output_to_client.flush();
 		System.out.println("Sent message:" + message);
+		*/
 	}
 	
 	
 	//Awaits a reply from the client
-	public void await_client_reply() {
+	public Communication await_client_reply() {
 		try {
-			while(!input_from_client.ready()) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception e){
-					System.out.println("Runtime Error: " + e);
-					e.printStackTrace();
-				}
-			}
-			while(input_from_client.ready()) {
-				text_buffer = input_from_client.readLine();
-				System.out.println("Received message from client: " + text_buffer);
-			}
+			Communication comm = (Communication) object_input_from_client.readObject();
+			String message = comm.message;
+			
+			System.out.println("Received message from client: " + message);
+			return comm;
+		}
+		catch (java.net.SocketException e){
+			System.out.println("Client disconnected");
+			return null;
 		}
 		catch (Exception e){
 			System.out.println("Runtime Error: " + e);
 			e.printStackTrace();
+			return null;
 		}
 	}
 }
