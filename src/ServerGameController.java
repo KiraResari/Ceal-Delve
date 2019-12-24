@@ -1,28 +1,21 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 
-public class GameController {
+public class ServerGameController {
 	
 	String text_buffer;
 	Socket client;
-	BufferedReader input_from_client;
-	PrintWriter output_to_client;
 	String version;
 	ObjectInputStream object_input_from_client;
 	ObjectOutputStream object_output_to_client;
 	
 
-	public GameController(Socket incoming_client, String incoming_version) {
-		client = incoming_client;
-		version = incoming_version;
+	public ServerGameController(Socket client, String version) {
+		this.client = client;
+		this.version = version;
 		try {
-			input_from_client = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			output_to_client = new PrintWriter(client.getOutputStream());
 			object_output_to_client = new ObjectOutputStream(client.getOutputStream());
 			object_input_from_client = new ObjectInputStream(client.getInputStream());
 		} 
@@ -33,18 +26,17 @@ public class GameController {
 	}
 	
 	public void welcome_message(Socket client) throws IOException{
-		output_to_client.println("        //------------------------//");
-		output_to_client.println("       // Welcome to...          //");
-		output_to_client.println("      //                        //");
-		output_to_client.println("     // THE CHRONICLES OF CEAL //");
-		output_to_client.println("    //          ~             //");
-		output_to_client.println("   //     DEEPER DELVING     //");
-		output_to_client.println("  //                        //");
-		output_to_client.println(" //         by Kira Resari //");
-		output_to_client.println("//------------------------//");
-		output_to_client.println("Server Version " + version);
-		output_to_client.println();
-		output_to_client.flush();
+		send_message_to_client("        //------------------------//", true);
+		send_message_to_client("       // Welcome to...          //", true);
+		send_message_to_client("      //                        //", true);
+		send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
+		send_message_to_client("    //          ~             //", true);
+		send_message_to_client("   //     DEEPER DELVING     //", true);
+		send_message_to_client("  //                        //", true);
+		send_message_to_client(" //         by Kira Resari //", true);
+		send_message_to_client("//------------------------//", true);
+		send_message_to_client("Server Version " + version, true);
+		send_message_to_client("", false);
 		System.out.println("Sent welcome message");
 	}
 	

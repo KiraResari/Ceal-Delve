@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,8 +8,6 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	BufferedReader input_from_client;
-	PrintWriter output_to_client;
 	String version = "0.4";
 
 	public static void main(String[] args) {
@@ -51,12 +46,8 @@ public class DelveServer {
 			String client_address = client.getInetAddress().getHostAddress() + client.getInetAddress().getHostName();
 			System.out.println("Incoming client from: " + client_address);
 			
-			//Initiate I/O channels
-			input_from_client = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			output_to_client = new PrintWriter(client.getOutputStream());
-			
 			//Initiate Game for that client
-			GameController game_controller = new GameController(client, version);
+			ServerGameController game_controller = new ServerGameController(client, version);
 			game_controller.game_init();
 			
 			
