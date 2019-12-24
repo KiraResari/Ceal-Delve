@@ -10,6 +10,7 @@ public class DelveClient {
 	Socket server;
 	String server_address = "127.0.0.1";
 	int server_port = 1337;
+	String version = "0.3";
 	
 	InputStream server_input_stream;
 	BufferedReader server_input;
@@ -40,6 +41,8 @@ public class DelveClient {
 			
 			//The user input
 			user_input = new BufferedReader(new InputStreamReader(System.in));
+			
+			System.out.println("Client Version " + version);
 			
 			//Await welcome message
 			await_server_message_single();
