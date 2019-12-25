@@ -12,19 +12,14 @@ public class ServerGameController {
 	String version;
 	ObjectInputStream object_input_from_client;
 	ObjectOutputStream object_output_to_client;
-	
+	ServerMessagingSystem server_messaging_system;
+	ServerBattleController server_battle_controller;
 
 	public ServerGameController(Socket client, String version) {
 		this.client = client;
 		this.version = version;
-		try {
-			object_output_to_client = new ObjectOutputStream(client.getOutputStream());
-			object_input_from_client = new ObjectInputStream(client.getInputStream());
-		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
+		server_messaging_system = new ServerMessagingSystem(client);
+		server_battle_controller = new ServerBattleController(server_messaging_system);
 	}
 	
 	//The functions that get carried out at the beginning of the game
@@ -35,44 +30,57 @@ public class ServerGameController {
 		//Wait for the over message
 		await_over();
 		
+		//Character creation
 		character_creation();
+		
+		//First battle
+		
 		
 		//Echo phase at the end of the game
 		echo_phase();
 	}
+	
+	public void first_battle() {
+		server_messaging_system.send_message_to_client("Tales of riches have let you to a cave.", true);
+		server_messaging_system.send_message_to_client("Some of the adventurers woh entered it have returned loaded with treasure.", true);
+		server_messaging_system.send_message_to_client("Others have not returned at all.", true);
+		server_messaging_system.send_message_to_client("What fate will await you?", true);
+		server_messaging_system.send_message_to_client("Carefully, you make your way into the cave.", true);
+		server_messaging_system.send_message_to_client("Suddenly, the first challenge of your delve appears before you.", true);
+	}
 
 	public void echo_phase() {
-		send_message_to_client("You have reached the end of the delve.", true);
-		send_message_to_client("A great, empty cave unfolds before your eyes.", true);
-		send_message_to_client("Surely there's a great echo here.", true);
-		send_message_to_client("What do you want to call out?", false);
+		server_messaging_system.send_message_to_client("You have reached the end of the delve.", true);
+		server_messaging_system.send_message_to_client("A great, empty cave unfolds before your eyes.", true);
+		server_messaging_system.send_message_to_client("Surely there's a great echo here.", true);
+		server_messaging_system.send_message_to_client("What do you want to call out?", false);
 		
 		while(true) {
-			Communication reply = await_client_reply();
+			Communication reply = server_messaging_system.await_client_reply();
 			if(reply == null) {
 				break;
 			}
 			String incoming_message = reply.message;
-			send_message_to_client(incoming_message + "... " + incoming_message + "...... " + incoming_message + "......... ", true);
-			send_message_to_client("", true);
-			send_message_to_client("That was nice.", true);
-			send_message_to_client("What do you want to call out?", false);
+			server_messaging_system.send_message_to_client(incoming_message + "... " + incoming_message + "...... " + incoming_message + "......... ", true);
+			server_messaging_system.send_message_to_client("", true);
+			server_messaging_system.send_message_to_client("That was nice.", true);
+			server_messaging_system.send_message_to_client("What do you want to call out?", false);
 	
 		}
 	}
 	
 	public void welcome_message(Socket client) throws IOException{
-		send_message_to_client("        //------------------------//", true);
-		send_message_to_client("       // Welcome to...          //", true);
-		send_message_to_client("      //                        //", true);
-		send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
-		send_message_to_client("    //          ~             //", true);
-		send_message_to_client("   //     DEEPER DELVING     //", true);
-		send_message_to_client("  //                        //", true);
-		send_message_to_client(" //         by Kira Resari //", true);
-		send_message_to_client("//------------------------//", true);
-		send_message_to_client("Server Version " + version, true);
-		send_message_to_client("", false);
+		server_messaging_system.send_message_to_client("        //------------------------//", true);
+		server_messaging_system.send_message_to_client("       // Welcome to...          //", true);
+		server_messaging_system.send_message_to_client("      //                        //", true);
+		server_messaging_system.send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
+		server_messaging_system.send_message_to_client("    //          ~             //", true);
+		server_messaging_system.send_message_to_client("   //     DEEPER DELVING     //", true);
+		server_messaging_system.send_message_to_client("  //                        //", true);
+		server_messaging_system.send_message_to_client(" //         by Kira Resari //", true);
+		server_messaging_system.send_message_to_client("//------------------------//", true);
+		server_messaging_system.send_message_to_client("Server Version " + version, true);
+		server_messaging_system.send_message_to_client("", false);
 		System.out.println("Sent welcome message");
 	}
 	
@@ -80,7 +88,7 @@ public class ServerGameController {
 	public void await_over() throws IOException{
 		System.out.println("Waiting for over-message...");
 		while(true) {
-			Communication reply = await_client_reply();
+			Communication reply = server_messaging_system.await_client_reply();
 			if(reply.type.equals(CommunicationTypes.over)){
 				break;
 			}
@@ -101,18 +109,18 @@ public class ServerGameController {
 	//Asks for the character name
 	public void ask_character_name(Character player_character) {
 		// Sends the question
-		send_message_to_client("What is your name?", false);
+		server_messaging_system.send_message_to_client("What is your name?", false);
 		
 		// Waits for a reply
-		Communication reply = await_client_reply();
+		Communication reply = server_messaging_system.await_client_reply();
 		
 		//Records the character name
 		player_character.name = reply.message;
 		
 		//Greets the player character
-		send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!", true);
-		send_message_to_client("It is a fantastic world full of marvels, but also dangers.", true);
-		send_message_to_client("", false);
+		server_messaging_system.send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!", true);
+		server_messaging_system.send_message_to_client("It is a fantastic world full of marvels, but also dangers.", true);
+		server_messaging_system.send_message_to_client("", false);
 		
 	}
 	
@@ -133,99 +141,25 @@ public class ServerGameController {
 			);
 			Question question = new Question(question_message, question_options);
 			
-			reply = send_question_to_client(question);
+			reply = server_messaging_system.send_question_to_client(question);
 			element_id = Integer.parseInt(reply.message);
 			
 			question_message = "So your favourite element is " + Elements.get_element_by_id(element_id).name + ". Is that right?";
 	
 			question = new Question(question_message);
-			reply = send_question_to_client(question);
+			reply = server_messaging_system.send_question_to_client(question);
 			
 			if(reply.message.equals("Y")) {
-				send_message_to_client("", true);
+				server_messaging_system.send_message_to_client("", true);
 				break;
 			}
 			else {
-				send_message_to_client("Okay, then let me ask again:", true);
+				server_messaging_system.send_message_to_client("Okay, then let me ask again:", true);
 			}
 		}
 		
 		//Assigns the element to the character
 		player_character.element = Elements.get_element_by_id(element_id);
 		
-	}
-	
-	//Sends a message to the client
-	public void send_message_to_client(String message, Boolean autoscroll) {
-		String type;
-		if(autoscroll) {
-			type = CommunicationTypes.message_autoscroll;
-		}
-		else {
-			type = CommunicationTypes.message;
-		}
-		
-		Communication outgoing_communication = new Communication(type, message);
-		
-		try {
-			object_output_to_client.writeObject(outgoing_communication);
-			object_output_to_client.flush();
-		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
-		System.out.println("Sent message to client: " + message);
-	}
-	
-	public Communication send_question_to_client(Question question) {
-		Communication outgoing_communication = new Communication(CommunicationTypes.question, question);
-		//Communication outgoing_communication = new Communication(CommunicationTypes.message, "Test question");
-		try {
-			object_output_to_client.writeObject(outgoing_communication);
-			object_output_to_client.flush();
-		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
-		System.out.println("Sent question to client: " + question.question_message);
-		
-		// Waits for a reply
-		Communication reply = await_client_reply();
-		
-		while(true) {
-			
-			//Checks for a valid reply
-			if (question.validateReply(reply.message)){
-				break;
-			}
-			else {
-				send_message_to_client("Please pick from the provided options:", true);
-				send_message_to_client(question.question_option_hotkeys.toString(), false);
-			}
-			reply = await_client_reply();
-		}
-		return reply;
-	}
-	
-	//Awaits a reply from the client
-	public Communication await_client_reply() {
-		try {
-			Communication comm = (Communication) object_input_from_client.readObject();
-			String message = comm.message;
-			
-			System.out.println("Received message from client: " + message);
-			return comm;
-		}
-		catch (java.net.SocketException e){
-			System.out.println("Client disconnected");
-			return null;
-		}
-		catch (Exception e){
-			System.out.println("Runtime Error: " + e);
-			e.printStackTrace();
-			return null;
-		}
 	}
 }

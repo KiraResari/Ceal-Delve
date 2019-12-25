@@ -8,7 +8,7 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "0.5";
+	String version = "0.6";
 
 	public static void main(String[] args) {
 		DelveServer s = new DelveServer();
