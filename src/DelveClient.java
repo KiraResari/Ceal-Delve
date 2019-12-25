@@ -9,7 +9,7 @@ public class DelveClient {
 	Socket server;
 	String server_address = "127.0.0.1";
 	int server_port = 1337;
-	String version = "0.4";
+	String version = "0.5";
 	
 	BufferedReader server_input;
 	BufferedReader user_input;
@@ -37,6 +37,10 @@ public class DelveClient {
 		
 		catch (java.net.ConnectException e){
 			System.out.println("ERROR: Delve Server does not appear to be running; Attempted to connect to Server: " + server_address + " Port: " + server_port);
+		}
+		
+		catch (java.net.SocketException e){
+			System.out.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
 		}
 		
 		catch (Exception e){

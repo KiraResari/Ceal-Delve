@@ -1,5 +1,5 @@
 
 public class Character {
 	String name;
-	String element;
+	Element element;
 }

@@ -39,8 +39,14 @@ public class ClientGameController {
 		get_user_input();
 		await_server_communication();
 		
+		//Main game loop
+		while(true) {
+			await_server_communication();
+			get_user_input();
+		}
+		
 		//Echo Phase at end of game
-		echo_phase();
+		//echo_phase();
 	}
 	
 	public void echo_phase() {
@@ -63,8 +69,8 @@ public class ClientGameController {
 	//This function sends a String Terminator to the server, signaling that the client is ready for the next request
 	public void send_string_terminator() {
 		try {
-		Communication comm = new Communication(CommunicationTypes.over, "");
-			object_output_to_server.writeObject(comm);
+		Communication incoming_communication = new Communication(CommunicationTypes.over, "");
+			object_output_to_server.writeObject(incoming_communication);
 			object_output_to_server.flush();
 		}
 		catch (Exception e){
@@ -72,38 +78,54 @@ public class ClientGameController {
 			e.printStackTrace();
 		}
 	}
-	
-	
-
-	
-
 
 	//Handles incoming communications from the server
 	public void await_server_communication() {
 		try {
-			Communication comm = (Communication) object_input_from_server.readObject();
+			Communication incoming_communication = (Communication) object_input_from_server.readObject();
 			
-			if (comm.type.equals(CommunicationTypes.message)) {
-				handle_server_message(comm);
+			if (incoming_communication.type.equals(CommunicationTypes.message)) {
+				handle_server_message(incoming_communication);
 			}
-			else if (comm.type.equals(CommunicationTypes.message_autoscroll)) {
-				handle_server_message_autoscroll(comm);
+			else if (incoming_communication.type.equals(CommunicationTypes.message_autoscroll)) {
+				handle_server_message_autoscroll(incoming_communication);
+			}
+			else if (incoming_communication.type.equals(CommunicationTypes.question)) {
+				handle_server_question(incoming_communication);
+			}
+			else {
+				System.out.println("ERROR: Communication Type '" + incoming_communication.type + "' is not implemented in the client.");
 			}
 		} 
+		
+		catch (java.net.SocketException e){
+			System.out.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
+		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}	
 	}
 	
-	public void handle_server_message(Communication comm) {
-		System.out.println(comm.message);
+	public void handle_server_message(Communication incoming_communication) {
+		System.out.println(incoming_communication.message);
 	}
 	
 	
-	public void handle_server_message_autoscroll(Communication comm) {
-		System.out.println(comm.message);
+	public void handle_server_message_autoscroll(Communication incoming_communication) {
+		System.out.println(incoming_communication.message);
 		await_server_communication();
+	}
+	
+	public void handle_server_question(Communication incoming_communication) {
+		//Prints the question
+		System.out.println(incoming_communication.question.question_message);
+		
+		//Prints the answers in one line
+		for(QuestionOption question_option : incoming_communication.question.question_options) {
+			System.out.print("| [" + question_option.hotkey + "] " + question_option.option_text + " |");
+		}
+		System.out.println();
 	}
 	
 	//Requests user input and sends it to the server
