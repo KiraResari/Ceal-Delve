@@ -1,12 +1,16 @@
 
-public class Enemy {
-	public String name;
-	public String entry_narrative;
-	public String attack_narrative;
-	public Element weakness;
-	public int max_life;
-	public int current_life;
-	public int attack;
-	public int defense;
-	public int µ;
+public class Enemy extends Combatant {
+	String name;
+	String entry_narrative;
+	String attack_narrative;
+	String defeat_narrative;
+	String player_kill_narrative;
+	Element weakness;
+	int level;
+	int max_life;
+	int current_life;
+	int attack;
+	int defense;
+	int µ;
+	int experience;
 }

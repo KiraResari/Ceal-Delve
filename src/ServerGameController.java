@@ -14,6 +14,7 @@ public class ServerGameController {
 	ObjectOutputStream object_output_to_client;
 	ServerMessagingSystem server_messaging_system;
 	ServerBattleController server_battle_controller;
+	Character player_character;
 
 	public ServerGameController(Socket client, String version) {
 		this.client = client;
@@ -34,7 +35,15 @@ public class ServerGameController {
 		character_creation();
 		
 		//First battle
+		first_battle();
+		if(player_character.current_life <= 0) {
+			return;
+		}
 		
+		//Further battles
+		for(int i = 0; i < 2; i++) {
+			battle(new EnemyZevi());
+		}
 		
 		//Echo phase at the end of the game
 		echo_phase();
@@ -47,6 +56,12 @@ public class ServerGameController {
 		server_messaging_system.send_message_to_client("What fate will await you?", true);
 		server_messaging_system.send_message_to_client("Carefully, you make your way into the cave.", true);
 		server_messaging_system.send_message_to_client("Suddenly, the first challenge of your delve appears before you.", true);
+		battle(new EnemyZevi());
+	}
+	
+	public void battle(Enemy enemy) {
+		server_messaging_system.send_message_to_client("An enemy appears before you!", true);
+		server_battle_controller.battle(player_character, enemy);
 	}
 
 	public void echo_phase() {
@@ -97,7 +112,7 @@ public class ServerGameController {
 	}
 	
 	public void character_creation() {
-		Character player_character = new Character();
+		player_character = new Character();
 		
 		//Asks for a character name
 		ask_character_name(player_character);

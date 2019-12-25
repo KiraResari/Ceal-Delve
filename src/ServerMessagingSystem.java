@@ -61,14 +61,19 @@ public class ServerMessagingSystem {
 		while(true) {
 			
 			//Checks for a valid reply
-			if (question.validateReply(reply.message)){
+			try {
+				if (question.validateReply(reply.message)){
+					break;
+				}
+				else {
+					send_message_to_client("Please pick from the provided options:", true);
+					send_message_to_client(question.question_option_hotkeys.toString(), false);
+				}
+				reply = await_client_reply();
+			}catch(NullPointerException e) {
+				System.out.println("Client disconnected");
 				break;
 			}
-			else {
-				send_message_to_client("Please pick from the provided options:", true);
-				send_message_to_client(question.question_option_hotkeys.toString(), false);
-			}
-			reply = await_client_reply();
 		}
 		return reply;
 	}
