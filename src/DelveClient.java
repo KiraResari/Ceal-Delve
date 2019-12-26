@@ -28,8 +28,8 @@ public class DelveClient {
 	public void start_client() {
 		server_connection = null;
 		try {
+			ask_server_type();
 			while(true) {
-				ask_server_type();
 				try {
 					server_connection = new Socket(server_address, server_port);
 					ClientGameController game_controller = new ClientGameController(server_connection);

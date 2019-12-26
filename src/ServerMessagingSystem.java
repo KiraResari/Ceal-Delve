@@ -2,6 +2,7 @@ import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerMessagingSystem {
 
@@ -49,7 +50,9 @@ public class ServerMessagingSystem {
 		try {
 			object_output_to_client.writeObject(outgoing_communication);
 			object_output_to_client.flush();
-		} 
+		} catch(SocketException e) {
+			throw new ClientDisconnectedException("SocketException in send_question_to_client");
+		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
