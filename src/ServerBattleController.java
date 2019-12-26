@@ -17,7 +17,7 @@ public class ServerBattleController {
 		this.server_messaging_system = server_messaging_system;
 	}
 	
-	public void battle(Character character, Enemy enemy){
+	public void battle(Character character, Enemy enemy) throws ClientDisconnectedException{
 		this.character = character;
 		this.enemy = enemy;
 		victor = null;
@@ -36,7 +36,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client(" ", true);
 	}
 	
-	public void battle_flow() {
+	public void battle_flow() throws ClientDisconnectedException {
 		while(victor == null) {
 			player_turn();
 			check_victor();
@@ -57,8 +57,9 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void player_turn() {
+	public void player_turn() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("It's your turn!", true);
+		character.defending = false;
 		print_player_turn_gui();
 		String question_message = "What do you want to do?";
 		List<QuestionOption> question_options = get_player_turn_options();
@@ -85,12 +86,21 @@ public class ServerBattleController {
 	public void enemy_turn() {
 		server_messaging_system.send_message_to_client(enemy.attack_narrative, true);
 		damage = enemy.attack - character.defense;
+		
+		if(character.defending) {
+			int reduced_damage = (int) Math.ceil(damage / 2.0);
+			player_regain_energy(reduced_damage);
+			damage -= reduced_damage;
+			server_messaging_system.send_message_to_client("You take " + reduced_damage + " less damage because you defended and regain " + reduced_damage + " energy.", true);
+		}
+		
 		if(damage > 0) {
 			character.current_life -= damage;
 			server_messaging_system.send_message_to_client("You take " + damage + " damage.", true);
 		} else {
 			server_messaging_system.send_message_to_client("...but you don't takes any damage.", true);
 		}
+		
 		server_messaging_system.send_message_to_client("", true);
 	}
 	
@@ -142,7 +152,7 @@ public class ServerBattleController {
 		character.max_life *= 1.1;
 		character.max_energy *= 1.1;
 		character.experience_current -= character.experience_to_next_level;
-		character.experience_to_next_level *= 1.1;
+		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);
 		server_messaging_system.send_message_to_client(" You are now a Lv" + character.level + " " + character.character_class + "!", true);
 		character.current_life = character.max_life;
 		character.current_energy = character.max_energy;
@@ -171,10 +181,10 @@ public class ServerBattleController {
 			question_options.add(new QuestionOption("Iserialogy", "I"));
 		}
 		question_options.add(new QuestionOption("Defend", "D"));
-		if(character.healing_kykli_count > 0) {
+		if(character.healing_kykli_count > 0 && character.current_life < character.max_life) {
 			question_options.add(new QuestionOption("Use Healing Kykli", "H"));
 		}
-		if(character.energy_water_count > 0) {
+		if(character.energy_water_count > 0 && character.current_energy < character.max_energy) {
 			question_options.add(new QuestionOption("Drink Energy Water", "E"));
 		}
 		
@@ -182,7 +192,7 @@ public class ServerBattleController {
 	}
 	
 	public void player_attack() {
-		server_messaging_system.send_message_to_client("You attack the " + enemy.name, true);
+		server_messaging_system.send_message_to_client("You attack the " + enemy.name + "!", true);
 		damage = character.attack - enemy.defense;
 		if(damage > 0) {
 			enemy.current_life -= damage;
@@ -193,19 +203,65 @@ public class ServerBattleController {
 	}
 	
 	public void player_iserialogy() {
-		server_messaging_system.send_message_to_client("NOT IMPLEMENTED YET", true);
+		server_messaging_system.send_message_to_client("You cast " + character.element.name + " Blast!", true);
+		character.current_energy -= iserialogy_cost;
+		damage = iserialogy_power;
+		if(enemy.weakness == character.element) {
+			server_messaging_system.send_message_to_client("You hit the enemy's weak point!", true);
+			damage *= 2;
+		}
+		damage -= enemy.defense;
+		if(damage > 0) {
+			enemy.current_life -= damage;
+			server_messaging_system.send_message_to_client("The " + enemy.name + " takes " + damage + " " + character.element.name + " damage.", true);
+		} else {
+			server_messaging_system.send_message_to_client("...but the " + enemy.name + " takes no damage.", true);
+		}
 	}
 	
 	public void player_defend() {
-		server_messaging_system.send_message_to_client("NOT IMPLEMENTED YET", true);
+		server_messaging_system.send_message_to_client("You defend yourself.", true);
+		character.defending = true;
 	}
 	
 	public void player_healing_kykli() {
-		server_messaging_system.send_message_to_client("NOT IMPLEMENTED YET", true);
+		server_messaging_system.send_message_to_client("You use a Healing Kykli to heal yourself.", true);
+		character.healing_kykli_count -= 1;
+		int life_before = character.current_life;
+		player_regain_life(healing_kykli_power);
+		int life_regenerated = character.current_life - life_before;
+		if(character.current_life == character.max_life) {
+			server_messaging_system.send_message_to_client("You are fully healed.", true);
+		}else {
+			server_messaging_system.send_message_to_client("Your health is restored by " + life_regenerated + " points.", true);
+		}
 	}
 	
 	public void player_energy_water() {
-		server_messaging_system.send_message_to_client("NOT IMPLEMENTED YET", true);
+		server_messaging_system.send_message_to_client("You drink some Energy Water to restore your Energy.", true);
+		character.energy_water_count -= 1;
+		int energy_before = character.current_energy;
+		player_regain_energy(energy_water_power);
+		int energy_regenerated = character.current_energy - energy_before;
+		if(character.current_energy == character.max_energy) {
+			server_messaging_system.send_message_to_client("Your energy is fully restored.", true);
+		}else {
+			server_messaging_system.send_message_to_client("Your energy is restored by " + energy_regenerated + " points.", true);
+		}
+	}
+	
+	public void player_regain_energy(int energy_regeneration) {
+		character.current_energy += energy_regeneration;
+		if(character.current_energy > character.max_energy) {
+			character.current_energy = character.max_energy;
+		}
+	}
+	
+	public void player_regain_life(int life_regeneration) {
+		character.current_life += life_regeneration;
+		if(character.current_life > character.max_life) {
+			character.current_life = character.max_life;
+		}
 	}
 	
 }

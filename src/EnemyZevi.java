@@ -10,9 +10,9 @@ public class EnemyZevi extends Enemy {
 		weakness = Elements.ice;
 		max_life = 10;
 		current_life = 10;
-		attack = 6;
-		defense = 1;
+		attack = 7;
+		defense = 2;
 		µ = 5;
-		experience = 5;
+		experience = 4;
 	}
 }

@@ -24,7 +24,7 @@ public class ServerGameController {
 	}
 	
 	//The functions that get carried out at the beginning of the game
-	public void game_init() throws IOException{
+	public void game_init() throws IOException, ClientDisconnectedException{
 		//Sends welcome message
 		welcome_message(client);
 		
@@ -41,7 +41,7 @@ public class ServerGameController {
 		}
 		
 		//Further battles
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < 4; i++) {
 			battle(new EnemyZevi());
 		}
 		
@@ -49,7 +49,7 @@ public class ServerGameController {
 		echo_phase();
 	}
 	
-	public void first_battle() {
+	public void first_battle() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("Tales of riches have let you to a cave.", true);
 		server_messaging_system.send_message_to_client("Some of the adventurers woh entered it have returned loaded with treasure.", true);
 		server_messaging_system.send_message_to_client("Others have not returned at all.", true);
@@ -59,7 +59,7 @@ public class ServerGameController {
 		battle(new EnemyZevi());
 	}
 	
-	public void battle(Enemy enemy) {
+	public void battle(Enemy enemy) throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("An enemy appears before you!", true);
 		server_battle_controller.battle(player_character, enemy);
 	}
@@ -72,7 +72,7 @@ public class ServerGameController {
 		
 		while(true) {
 			Communication reply = server_messaging_system.await_client_reply();
-			if(reply == null) {
+			if(reply.equals(null)) {
 				break;
 			}
 			String incoming_message = reply.message;
@@ -111,7 +111,7 @@ public class ServerGameController {
 		System.out.println("Received Over-message. Continuing.");
 	}
 	
-	public void character_creation() {
+	public void character_creation() throws ClientDisconnectedException {
 		player_character = new Character();
 		
 		//Asks for a character name
@@ -139,7 +139,7 @@ public class ServerGameController {
 		
 	}
 	
-	public void ask_character_element(Character player_character) {
+	public void ask_character_element(Character player_character) throws ClientDisconnectedException {
 		
 		Communication reply;
 		int element_id;

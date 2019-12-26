@@ -15,4 +15,5 @@ public class Character extends Combatant {
 	int µ = 0;
 	int healing_kykli_count = 3;
 	int energy_water_count = 1;
+	Boolean defending = false;
 }

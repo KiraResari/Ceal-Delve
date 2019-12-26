@@ -42,7 +42,7 @@ public class ServerMessagingSystem {
 		System.out.println("Sent message to client: " + message);
 	}
 	
-	public Communication send_question_to_client(Question question) {
+	public Communication send_question_to_client(Question question) throws ClientDisconnectedException {
 		Communication outgoing_communication = new Communication(CommunicationTypes.question, question);
 		//Communication outgoing_communication = new Communication(CommunicationTypes.message, "Test question");
 		try {
@@ -71,8 +71,7 @@ public class ServerMessagingSystem {
 				}
 				reply = await_client_reply();
 			}catch(NullPointerException e) {
-				System.out.println("Client disconnected");
-				break;
+				throw new ClientDisconnectedException("Null Pointer Exception in send_question_to_client");
 			}
 		}
 		return reply;

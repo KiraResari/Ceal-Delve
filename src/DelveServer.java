@@ -8,7 +8,7 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "0.6";
+	String version = "0.7";
 
 	public static void main(String[] args) {
 		DelveServer s = new DelveServer();
@@ -30,13 +30,16 @@ public class DelveServer {
 			//Run Server
 			run_server(server);
 		}
+		catch (ClientDisconnectedException e){
+			System.out.println("Client Disconnected");
+		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}
 	}
 	
-	public void run_server(ServerSocket server) throws IOException{
+	public void run_server(ServerSocket server) throws IOException, ClientDisconnectedException{
 		while(true) {
 			//Accept incoming connections
 			client = server.accept();
