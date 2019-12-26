@@ -12,19 +12,23 @@ public class Question implements Serializable {
 	public List<String> question_option_hotkeys;
 	
 	//Questions with custom options
-	public Question(String question_message, List<QuestionOption> question_options) {
+	private Question(String question_message, List<QuestionOption> question_options) {
 		this.question_message = question_message;
 		this.question_options = question_options;
 		generateQuestionOptionHotkeyList();
 	}
 	
-	//Yes/No Questions
-	public Question(String question_message) {
-		this.question_message = question_message;
-		question_options = new ArrayList<QuestionOption>();
-		this.question_options.add(new QuestionOption("Yes", "Y"));
-		this.question_options.add(new QuestionOption("No", "N"));
-		generateQuestionOptionHotkeyList();
+	static public Question construct_yes_no_question(String question_message) {
+		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
+		question_options.add(new QuestionOption("Yes", "Y"));
+		question_options.add(new QuestionOption("No", "N"));
+		Question question = new Question(question_message, question_options);
+		return question;
+	}
+	
+	static public Question construct_question_with_custom_options(String question_message, List<QuestionOption> question_options) {
+		Question question = new Question(question_message, question_options);
+		return question;
 	}
 
 	public Boolean validateReply(String reply) {

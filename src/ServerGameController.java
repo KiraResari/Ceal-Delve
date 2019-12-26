@@ -154,14 +154,14 @@ public class ServerGameController {
 					question_options.add(new QuestionOption(element.name, Integer.toString(element.id)));
 				}
 			);
-			Question question = new Question(question_message, question_options);
+			Question question = Question.construct_question_with_custom_options(question_message, question_options);
 			
 			reply = server_messaging_system.send_question_to_client(question);
 			element_id = Integer.parseInt(reply.message);
 			
 			question_message = "So your favourite element is " + Elements.get_element_by_id(element_id).name + ". Is that right?";
 	
-			question = new Question(question_message);
+			question = Question.construct_yes_no_question(question_message);
 			reply = server_messaging_system.send_question_to_client(question);
 			
 			if(reply.message.equals("Y")) {

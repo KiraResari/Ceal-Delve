@@ -13,7 +13,7 @@ public class DelveClient {
 	Socket server_connection;
 	String server_address = "127.0.0.1";
 	int server_port = 1337;
-	String version = "0.8";
+	String version = "0.9";
 	
 	BufferedReader server_input;
 	BufferedReader user_input = new BufferedReader(new InputStreamReader(System.in));
@@ -62,7 +62,7 @@ public class DelveClient {
 		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
 		question_options.add(new QuestionOption("Local Machine", "L"));
 		question_options.add(new QuestionOption("Network", "N"));
-		Question question = new Question(question_message, question_options);
+		Question question = Question.construct_question_with_custom_options(question_message, question_options);
 		
 		question.print_question();
 		
@@ -82,7 +82,7 @@ public class DelveClient {
 	public Boolean ask_change_server_type_question() throws IOException {
 		String reply;
 		String question_message = "Do you want to try and connect to a different server?";
-		Question question = new Question(question_message);
+		Question question = Question.construct_yes_no_question(question_message);
 		
 		question.print_question();
 		
