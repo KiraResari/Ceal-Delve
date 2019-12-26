@@ -32,7 +32,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client("|| BATTLE START! ||", true);
 		server_messaging_system.send_message_to_client("|=================|", true);
 		server_messaging_system.send_message_to_client(" ", true);
-		server_messaging_system.send_message_to_client(enemy.entry_narrative, true);
+		server_messaging_system.send_message_to_client(enemy.entry_narrative, false);
 		server_messaging_system.send_message_to_client(" ", true);
 	}
 	
@@ -84,21 +84,21 @@ public class ServerBattleController {
 	}
 	
 	public void enemy_turn() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(enemy.attack_narrative, true);
+		server_messaging_system.send_message_to_client(enemy.attack_narrative, false);
 		damage = enemy.attack - character.defense;
 		
 		if(character.defending) {
 			int reduced_damage = (int) Math.ceil(damage / 2.0);
 			player_regain_energy(reduced_damage);
 			damage -= reduced_damage;
-			server_messaging_system.send_message_to_client("You take " + reduced_damage + " less damage because you defended and regain " + reduced_damage + " energy.", true);
+			server_messaging_system.send_message_to_client("You take " + reduced_damage + " less damage because you defended and regain " + reduced_damage + " energy.", false);
 		}
 		
 		if(damage > 0) {
 			character.current_life -= damage;
-			server_messaging_system.send_message_to_client("You take " + damage + " damage.", true);
+			server_messaging_system.send_message_to_client("You take " + damage + " damage.", false);
 		} else {
-			server_messaging_system.send_message_to_client("...but you don't takes any damage.", true);
+			server_messaging_system.send_message_to_client("...but you don't takes any damage.", false);
 		}
 		
 		server_messaging_system.send_message_to_client("", true);
@@ -114,13 +114,13 @@ public class ServerBattleController {
 	}
 	
 	public void victory() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(enemy.defeat_narrative, true);
-		server_messaging_system.send_message_to_client("You gained " + enemy.experience + " Exp,", true);
+		server_messaging_system.send_message_to_client(enemy.defeat_narrative, false);
+		server_messaging_system.send_message_to_client("You gained " + enemy.experience + " Exp,", false);
 		character.experience_current += enemy.experience;
 		if(character.experience_current >= character.experience_to_next_level) {
 			level_up();
 		}
-		server_messaging_system.send_message_to_client("You found " + enemy.µ + "µ.", true);
+		server_messaging_system.send_message_to_client("You found " + enemy.µ + "µ.", false);
 		character.µ += enemy.µ;
 		server_messaging_system.send_message_to_client(" ", true);
 		server_messaging_system.send_message_to_client("|==============|", true);
@@ -130,7 +130,7 @@ public class ServerBattleController {
 	}
 	
 	public void defeat() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(enemy.player_kill_narrative, true);
+		server_messaging_system.send_message_to_client(enemy.player_kill_narrative, false);
 		server_messaging_system.send_message_to_client("", true);
 		server_messaging_system.send_message_to_client("//===============\\\\", true);
 		server_messaging_system.send_message_to_client("||               ||", true);
@@ -153,10 +153,11 @@ public class ServerBattleController {
 		character.max_energy *= 1.1;
 		character.experience_current -= character.experience_to_next_level;
 		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);
-		server_messaging_system.send_message_to_client(" You are now a Lv" + character.level + " " + character.character_class + "!", true);
+		server_messaging_system.send_message_to_client("You are now a Lv" + character.level + " " + character.character_class + "!", false);
 		character.current_life = character.max_life;
 		character.current_energy = character.max_energy;
-		server_messaging_system.send_message_to_client(" Your Life and Energy have been fully restored.", true);
+		server_messaging_system.send_message_to_client("Your Life and Energy have been fully restored.", false);
+		server_messaging_system.send_message_to_client("", true);
 	}
 	
 	public void print_player_turn_gui() throws ClientDisconnectedException {
@@ -192,61 +193,61 @@ public class ServerBattleController {
 	}
 	
 	public void player_attack() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You attack the " + enemy.name + "!", true);
+		server_messaging_system.send_message_to_client("You attack the " + enemy.name + "!", false);
 		damage = character.attack - enemy.defense;
 		if(damage > 0) {
 			enemy.current_life -= damage;
-			server_messaging_system.send_message_to_client("The " + enemy.name + " takes " + damage + " damage.", true);
+			server_messaging_system.send_message_to_client("The " + enemy.name + " takes " + damage + " damage.", false);
 		} else {
-			server_messaging_system.send_message_to_client("...but the " + enemy.name + " takes no damage.", true);
+			server_messaging_system.send_message_to_client("...but the " + enemy.name + " takes no damage.", false);
 		}
 	}
 	
 	public void player_iserialogy() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You cast " + character.element.name + " Blast!", true);
+		server_messaging_system.send_message_to_client("You invoke the Iserialogy " + character.element.name + " Blast!", false);
 		character.current_energy -= iserialogy_cost;
 		damage = iserialogy_power;
 		if(enemy.weakness == character.element) {
-			server_messaging_system.send_message_to_client("You hit the enemy's weak point!", true);
+			server_messaging_system.send_message_to_client("You hit the enemy's weak point!", false);
 			damage *= 2;
 		}
 		damage -= enemy.defense;
 		if(damage > 0) {
 			enemy.current_life -= damage;
-			server_messaging_system.send_message_to_client("The " + enemy.name + " takes " + damage + " " + character.element.name + " damage.", true);
+			server_messaging_system.send_message_to_client("The " + enemy.name + " takes " + damage + " " + character.element.name + " damage.", false);
 		} else {
-			server_messaging_system.send_message_to_client("...but the " + enemy.name + " takes no damage.", true);
+			server_messaging_system.send_message_to_client("...but the " + enemy.name + " takes no damage.", false);
 		}
 	}
 	
 	public void player_defend() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You defend yourself.", true);
+		server_messaging_system.send_message_to_client("You defend yourself.", false);
 		character.defending = true;
 	}
 	
 	public void player_healing_kykli() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You use a Healing Kykli to heal yourself.", true);
+		server_messaging_system.send_message_to_client("You use a Healing Kykli to heal yourself.", false);
 		character.healing_kykli_count -= 1;
 		int life_before = character.current_life;
 		player_regain_life(healing_kykli_power);
 		int life_regenerated = character.current_life - life_before;
 		if(character.current_life == character.max_life) {
-			server_messaging_system.send_message_to_client("You are fully healed.", true);
+			server_messaging_system.send_message_to_client("You are fully healed.", false);
 		}else {
-			server_messaging_system.send_message_to_client("Your health is restored by " + life_regenerated + " points.", true);
+			server_messaging_system.send_message_to_client("Your health is restored by " + life_regenerated + " points.", false);
 		}
 	}
 	
 	public void player_energy_water() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You drink some Energy Water to restore your Energy.", true);
+		server_messaging_system.send_message_to_client("You drink some Energy Water to restore your Energy.", false);
 		character.energy_water_count -= 1;
 		int energy_before = character.current_energy;
 		player_regain_energy(energy_water_power);
 		int energy_regenerated = character.current_energy - energy_before;
 		if(character.current_energy == character.max_energy) {
-			server_messaging_system.send_message_to_client("Your energy is fully restored.", true);
+			server_messaging_system.send_message_to_client("Your energy is fully restored.", false);
 		}else {
-			server_messaging_system.send_message_to_client("Your energy is restored by " + energy_regenerated + " points.", true);
+			server_messaging_system.send_message_to_client("Your energy is restored by " + energy_regenerated + " points.", false);
 		}
 	}
 	

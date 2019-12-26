@@ -30,13 +30,13 @@ public class ClientGameController {
 	}
 	
 	//The functions that get carried out at the beginning of the game
-	public void game_init() {
+	public void game_init() throws ServerDisconnectedException {
 		while(true) {
 			await_server_communication();
 		}
 	}
 	
-	public void echo_phase() throws IOException {
+	public void echo_phase() throws IOException, ServerDisconnectedException {
 		//Echo Phase
 		System.out.println();
 		System.out.println("You have reached the end of the delve.");
@@ -67,7 +67,7 @@ public class ClientGameController {
 	}
 
 	//Handles incoming communications from the server
-	public void await_server_communication() {
+	public void await_server_communication() throws ServerDisconnectedException {
 		try {
 			Communication incoming_communication = (Communication) object_input_from_server.readObject();
 			
@@ -92,7 +92,7 @@ public class ClientGameController {
 		} 
 		
 		catch (java.net.SocketException e){
-			System.out.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
+			throw new ServerDisconnectedException("SocketException in await_server_communication");
 		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
@@ -102,11 +102,11 @@ public class ClientGameController {
 	
 	public void handle_server_message(Communication incoming_communication) {
 		System.out.print(incoming_communication.message);
-		System.out.print("»");
+		System.out.print(" »");
 	}
 	
 	
-	public void handle_server_message_autoscroll(Communication incoming_communication) {
+	public void handle_server_message_autoscroll(Communication incoming_communication) throws ServerDisconnectedException {
 		System.out.println(incoming_communication.message);
 		await_server_communication();
 	}

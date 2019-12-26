@@ -74,9 +74,8 @@ public class ServerMessagingSystem {
 				}
 				else {
 					send_message_to_client("Please pick from the provided options:", true);
-					send_message_to_client(question.question_option_hotkeys.toString(), false);
+					reply = send_free_text_entry_request_to_client(question.question_option_hotkeys.toString());
 				}
-				reply = await_client_reply();
 			}catch(NullPointerException e) {
 				throw new ClientDisconnectedException("Null Pointer Exception in send_question_to_client");
 			}

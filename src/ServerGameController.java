@@ -47,37 +47,30 @@ public class ServerGameController {
 	}
 	
 	public void first_battle() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("Tales of riches have let you to a cave.", true);
-		server_messaging_system.send_message_to_client("Some of the adventurers woh entered it have returned loaded with treasure.", true);
-		server_messaging_system.send_message_to_client("Others have not returned at all.", true);
-		server_messaging_system.send_message_to_client("What fate will await you?", true);
-		server_messaging_system.send_message_to_client("Carefully, you make your way into the cave.", true);
-		server_messaging_system.send_message_to_client("Suddenly, the first challenge of your delve appears before you.", true);
+		server_messaging_system.send_message_to_client("Tales of riches have let you to a cave.", false);
+		server_messaging_system.send_message_to_client("Some of the adventurers who entered it have returned loaded with treasure.", false);
+		server_messaging_system.send_message_to_client("Others have not returned at all.", false);
+		server_messaging_system.send_message_to_client("What fate will await you?", false);
+		server_messaging_system.send_message_to_client("Carefully, you make your way into the cave.", false);
+		server_messaging_system.send_message_to_client("Suddenly, you come across the first challenge of your delve.", false);
 		battle(new EnemyZevi());
 	}
 	
 	public void battle(Enemy enemy) throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("An enemy appears before you!", true);
+		server_messaging_system.send_message_to_client("An enemy appears before you!", false);
 		server_battle_controller.battle(player_character, enemy);
 	}
 
 	public void echo_phase() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You have reached the end of the delve.", true);
-		server_messaging_system.send_message_to_client("A great, empty cave unfolds before your eyes.", true);
-		server_messaging_system.send_message_to_client("Surely there's a great echo here.", true);
-		server_messaging_system.send_message_to_client("What do you want to call out?", false);
+		server_messaging_system.send_message_to_client("You have reached the end of the delve.", false);
+		server_messaging_system.send_message_to_client("A great, empty cave unfolds before your eyes.", false);
+		server_messaging_system.send_message_to_client("Surely there's a great echo here.", false);
 		
 		while(true) {
-			Communication reply = server_messaging_system.await_client_reply();
-			if(reply.equals(null)) {
-				break;
-			}
+			Communication reply = server_messaging_system.send_free_text_entry_request_to_client("What do you want to call out?");
 			String incoming_message = reply.message;
-			server_messaging_system.send_message_to_client(incoming_message + "... " + incoming_message + "...... " + incoming_message + "......... ", true);
-			server_messaging_system.send_message_to_client("", true);
-			server_messaging_system.send_message_to_client("That was nice.", true);
-			server_messaging_system.send_message_to_client("What do you want to call out?", false);
-	
+			server_messaging_system.send_message_to_client(incoming_message + "... " + incoming_message + "...... " + incoming_message + "......... ", false);
+			server_messaging_system.send_message_to_client("That was nice.", false);
 		}
 	}
 	

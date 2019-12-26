@@ -42,7 +42,7 @@ public class DelveClient {
 						ask_server_type();
 					}
 				}
-				catch (java.net.SocketException e){
+				catch (java.net.SocketException | ServerDisconnectedException e){
 					System.out.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
 					if(ask_change_server_type_question()) {
 						ask_server_type();
