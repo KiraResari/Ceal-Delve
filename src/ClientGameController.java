@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,26 +31,12 @@ public class ClientGameController {
 	
 	//The functions that get carried out at the beginning of the game
 	public void game_init() {
-		//Await welcome message
-		await_server_communication();
-		send_string_terminator();
-		
-		//Await Name entry
-		await_server_communication();
-		get_user_input();
-		await_server_communication();
-		
-		//Main game loop
 		while(true) {
 			await_server_communication();
-			get_user_input();
 		}
-		
-		//Echo Phase at end of game
-		//echo_phase();
 	}
 	
-	public void echo_phase() {
+	public void echo_phase() throws IOException {
 		//Echo Phase
 		System.out.println();
 		System.out.println("You have reached the end of the delve.");
@@ -86,12 +73,18 @@ public class ClientGameController {
 			
 			if (incoming_communication.type.equals(CommunicationTypes.message)) {
 				handle_server_message(incoming_communication);
+				wait_for_enter();
 			}
 			else if (incoming_communication.type.equals(CommunicationTypes.message_autoscroll)) {
 				handle_server_message_autoscroll(incoming_communication);
 			}
 			else if (incoming_communication.type.equals(CommunicationTypes.question)) {
 				handle_server_question(incoming_communication);
+				get_user_input();
+			}
+			else if (incoming_communication.type.equals(CommunicationTypes.free_text_entry)) {
+				handle_server_free_text_entry_request(incoming_communication);
+				get_user_input();
 			}
 			else {
 				System.out.println("ERROR: Communication Type '" + incoming_communication.type + "' is not implemented in the client.");
@@ -108,7 +101,8 @@ public class ClientGameController {
 	}
 	
 	public void handle_server_message(Communication incoming_communication) {
-		System.out.println(incoming_communication.message);
+		System.out.print(incoming_communication.message);
+		System.out.print("»");
 	}
 	
 	
@@ -121,21 +115,24 @@ public class ClientGameController {
 		incoming_communication.question.print_question();
 	}
 	
-	//Requests user input and sends it to the server
-	public void get_user_input() {
-		try {
-			//Get user input
-			System.out.print("> ");
-			text_buffer = user_input.readLine();
-			
-			Communication comm = new Communication(CommunicationTypes.message, text_buffer);
-			object_output_to_server.writeObject(comm);
-			object_output_to_server.flush();
-			
-		}
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
+	public void handle_server_free_text_entry_request(Communication incoming_communication) {
+		System.out.println(incoming_communication.message);
+	}
+	
+	public void get_user_input() throws IOException {
+		//Get user input
+		System.out.print("> ");
+		text_buffer = user_input.readLine();
+		
+		Communication comm = new Communication(CommunicationTypes.message, text_buffer);
+		object_output_to_server.writeObject(comm);
+		object_output_to_server.flush();
+	}
+	
+	public void wait_for_enter() throws IOException {
+		user_input.readLine();
+		Communication comm = new Communication(CommunicationTypes.message, "");
+		object_output_to_server.writeObject(comm);
+		object_output_to_server.flush();
 	}
 }

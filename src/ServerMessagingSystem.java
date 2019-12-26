@@ -22,7 +22,7 @@ public class ServerMessagingSystem {
 	
 	
 	//Sends a message to the client
-	public void send_message_to_client(String message, Boolean autoscroll) {
+	public void send_message_to_client(String message, Boolean autoscroll) throws ClientDisconnectedException {
 		String type;
 		if(autoscroll) {
 			type = CommunicationTypes.message_autoscroll;
@@ -42,6 +42,9 @@ public class ServerMessagingSystem {
 			e.printStackTrace();
 		}
 		System.out.println("Sent message to client: " + message);
+		if(!autoscroll) {
+			 await_client_reply();
+		}
 	}
 	
 	public Communication send_question_to_client(Question question) throws ClientDisconnectedException {
@@ -78,6 +81,26 @@ public class ServerMessagingSystem {
 				throw new ClientDisconnectedException("Null Pointer Exception in send_question_to_client");
 			}
 		}
+		return reply;
+	}
+	
+	//Sends a message to the client
+	public Communication send_free_text_entry_request_to_client(String message) throws ClientDisconnectedException {
+		String type = CommunicationTypes.free_text_entry;
+		
+		Communication outgoing_communication = new Communication(type, message);
+		
+		try {
+			object_output_to_client.writeObject(outgoing_communication);
+			object_output_to_client.flush();
+		} 
+		catch (Exception e){
+			System.out.println("Error Occurred: " + e);
+			e.printStackTrace();
+		}
+		System.out.println("Sent free text entry request to client: " + message);
+		
+		Communication reply = await_client_reply();
 		return reply;
 	}
 	

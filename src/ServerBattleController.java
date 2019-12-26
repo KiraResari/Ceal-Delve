@@ -26,7 +26,7 @@ public class ServerBattleController {
 		battle_end();
 	}
 	
-	public void battle_init(){
+	public void battle_init() throws ClientDisconnectedException{
 		server_messaging_system.send_message_to_client(" ", true);
 		server_messaging_system.send_message_to_client("|=================|", true);
 		server_messaging_system.send_message_to_client("|| BATTLE START! ||", true);
@@ -48,7 +48,7 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void battle_end() {
+	public void battle_end() throws ClientDisconnectedException {
 		if(victor == character){
 			victory();
 		}
@@ -83,7 +83,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client("", true);
 	}
 	
-	public void enemy_turn() {
+	public void enemy_turn() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client(enemy.attack_narrative, true);
 		damage = enemy.attack - character.defense;
 		
@@ -113,7 +113,7 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void victory() {
+	public void victory() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client(enemy.defeat_narrative, true);
 		server_messaging_system.send_message_to_client("You gained " + enemy.experience + " Exp,", true);
 		character.experience_current += enemy.experience;
@@ -129,7 +129,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client(" ", true);
 	}
 	
-	public void defeat() {
+	public void defeat() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client(enemy.player_kill_narrative, true);
 		server_messaging_system.send_message_to_client("", true);
 		server_messaging_system.send_message_to_client("//===============\\\\", true);
@@ -140,7 +140,7 @@ public class ServerBattleController {
 		
 	}
 	
-	public void level_up() {
+	public void level_up() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("", true);
 		server_messaging_system.send_message_to_client("|=============|", true);
 		server_messaging_system.send_message_to_client("|| LEVEL UP! ||", true);
@@ -159,7 +159,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client(" Your Life and Energy have been fully restored.", true);
 	}
 	
-	public void print_player_turn_gui() {
+	public void print_player_turn_gui() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("//==================================================", true);
 		server_messaging_system.send_message_to_client("|| " + character.name, true);
 		server_messaging_system.send_message_to_client("|| Lv" + character.level + " " + character.character_class + "   Exp: " + character.experience_current + "/" + character.experience_to_next_level, true);
@@ -191,7 +191,7 @@ public class ServerBattleController {
 		return question_options;
 	}
 	
-	public void player_attack() {
+	public void player_attack() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You attack the " + enemy.name + "!", true);
 		damage = character.attack - enemy.defense;
 		if(damage > 0) {
@@ -202,7 +202,7 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void player_iserialogy() {
+	public void player_iserialogy() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You cast " + character.element.name + " Blast!", true);
 		character.current_energy -= iserialogy_cost;
 		damage = iserialogy_power;
@@ -219,12 +219,12 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void player_defend() {
+	public void player_defend() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You defend yourself.", true);
 		character.defending = true;
 	}
 	
-	public void player_healing_kykli() {
+	public void player_healing_kykli() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You use a Healing Kykli to heal yourself.", true);
 		character.healing_kykli_count -= 1;
 		int life_before = character.current_life;
@@ -237,7 +237,7 @@ public class ServerBattleController {
 		}
 	}
 	
-	public void player_energy_water() {
+	public void player_energy_water() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You drink some Energy Water to restore your Energy.", true);
 		character.energy_water_count -= 1;
 		int energy_before = character.current_energy;

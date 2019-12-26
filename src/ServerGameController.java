@@ -28,9 +28,6 @@ public class ServerGameController {
 		//Sends welcome message
 		welcome_message(client);
 		
-		//Wait for the over message
-		await_over();
-		
 		//Character creation
 		character_creation();
 		
@@ -84,7 +81,7 @@ public class ServerGameController {
 		}
 	}
 	
-	public void welcome_message(Socket client) throws IOException{
+	public void welcome_message(Socket client) throws IOException, ClientDisconnectedException{
 		server_messaging_system.send_message_to_client("        //------------------------//", true);
 		server_messaging_system.send_message_to_client("       // Welcome to...          //", true);
 		server_messaging_system.send_message_to_client("      //                        //", true);
@@ -95,7 +92,7 @@ public class ServerGameController {
 		server_messaging_system.send_message_to_client(" //         by Kira Resari //", true);
 		server_messaging_system.send_message_to_client("//------------------------//", true);
 		server_messaging_system.send_message_to_client("Server Version " + version, true);
-		server_messaging_system.send_message_to_client("", false);
+		server_messaging_system.send_message_to_client("", true);
 		System.out.println("Sent welcome message");
 	}
 	
@@ -123,19 +120,12 @@ public class ServerGameController {
 	
 	//Asks for the character name
 	public void ask_character_name(Character player_character) throws ClientDisconnectedException {
-		// Sends the question
-		server_messaging_system.send_message_to_client("What is your name?", false);
-		
-		// Waits for a reply
-		Communication reply = server_messaging_system.await_client_reply();
-		
-		//Records the character name
+		Communication reply = server_messaging_system.send_free_text_entry_request_to_client("What is your name?");
 		player_character.name = reply.message;
 		
-		//Greets the player character
-		server_messaging_system.send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal!", true);
-		server_messaging_system.send_message_to_client("It is a fantastic world full of marvels, but also dangers.", true);
-		server_messaging_system.send_message_to_client("", false);
+		server_messaging_system.send_message_to_client("Hello " + player_character.name + ", welcome to the wonderful world of Ceal! (press Enter/Return to continue)", false);
+		server_messaging_system.send_message_to_client("It is a fantastic world full of marvels, but also dangers.", false);
+		server_messaging_system.send_message_to_client("", true);
 		
 	}
 	
