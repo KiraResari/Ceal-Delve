@@ -1,3 +1,4 @@
+import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -78,7 +79,7 @@ public class ServerMessagingSystem {
 	}
 	
 	//Awaits a reply from the client
-	public Communication await_client_reply() {
+	public Communication await_client_reply() throws ClientDisconnectedException {
 		try {
 			Communication comm = (Communication) object_input_from_client.readObject();
 			String message = comm.message;
@@ -86,9 +87,8 @@ public class ServerMessagingSystem {
 			System.out.println("Received message from client: " + message);
 			return comm;
 		}
-		catch (java.net.SocketException e){
-			System.out.println("Client disconnected");
-			return null;
+		catch (java.net.SocketException | EOFException e){
+			throw new ClientDisconnectedException("Occurred in: await_client_reply");
 		}
 		catch (Exception e){
 			System.out.println("Runtime Error: " + e);

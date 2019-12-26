@@ -118,14 +118,7 @@ public class ClientGameController {
 	}
 	
 	public void handle_server_question(Communication incoming_communication) {
-		//Prints the question
-		System.out.println(incoming_communication.question.question_message);
-		
-		//Prints the answers in one line
-		for(QuestionOption question_option : incoming_communication.question.question_options) {
-			System.out.print("| [" + question_option.hotkey + "] " + question_option.option_text + " |");
-		}
-		System.out.println();
+		incoming_communication.question.print_question();
 	}
 	
 	//Requests user input and sends it to the server

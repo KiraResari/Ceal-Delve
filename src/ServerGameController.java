@@ -64,7 +64,7 @@ public class ServerGameController {
 		server_battle_controller.battle(player_character, enemy);
 	}
 
-	public void echo_phase() {
+	public void echo_phase() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You have reached the end of the delve.", true);
 		server_messaging_system.send_message_to_client("A great, empty cave unfolds before your eyes.", true);
 		server_messaging_system.send_message_to_client("Surely there's a great echo here.", true);
@@ -100,7 +100,7 @@ public class ServerGameController {
 	}
 	
 	//Waits for the client to send a String Terminator before proceeding
-	public void await_over() throws IOException{
+	public void await_over() throws IOException, ClientDisconnectedException{
 		System.out.println("Waiting for over-message...");
 		while(true) {
 			Communication reply = server_messaging_system.await_client_reply();
@@ -122,7 +122,7 @@ public class ServerGameController {
 	}
 	
 	//Asks for the character name
-	public void ask_character_name(Character player_character) {
+	public void ask_character_name(Character player_character) throws ClientDisconnectedException {
 		// Sends the question
 		server_messaging_system.send_message_to_client("What is your name?", false);
 		

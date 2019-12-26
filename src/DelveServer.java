@@ -8,7 +8,8 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "0.7";
+	String version = "0.8";
+	int port = 1337;
 
 	public static void main(String[] args) {
 		DelveServer s = new DelveServer();
@@ -18,7 +19,7 @@ public class DelveServer {
 	public void start_server() {
 		try {
 			// Start Server
-			ServerSocket server = new ServerSocket(1337);
+			ServerSocket server = new ServerSocket(port);
 			
 			//Print IP Address
 			System.out.println("Server started");
@@ -30,27 +31,29 @@ public class DelveServer {
 			//Run Server
 			run_server(server);
 		}
-		catch (ClientDisconnectedException e){
-			System.out.println("Client Disconnected");
-		}
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}
 	}
 	
-	public void run_server(ServerSocket server) throws IOException, ClientDisconnectedException{
+	public void run_server(ServerSocket server) throws IOException{
 		while(true) {
 			//Accept incoming connections
 			client = server.accept();
 			
-			//Record client Address
-			String client_address = client.getInetAddress().getHostAddress() + client.getInetAddress().getHostName();
-			System.out.println("Incoming client from: " + client_address);
-			
-			//Initiate Game for that client
-			ServerGameController game_controller = new ServerGameController(client, version);
-			game_controller.game_init();
+			try {
+				//Record client Address
+				String client_address = client.getInetAddress().getHostAddress() + client.getInetAddress().getHostName();
+				System.out.println("Incoming client from: " + client_address);
+				
+				//Initiate Game for that client
+				ServerGameController game_controller = new ServerGameController(client, version);
+				game_controller.game_init();
+			}
+			catch (ClientDisconnectedException e){
+				System.out.println("Client Disconnected");
+			}
 		}
 	}
 }
