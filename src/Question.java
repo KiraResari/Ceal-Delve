@@ -32,7 +32,7 @@ public class Question implements Serializable {
 	}
 
 	public Boolean validateReply(String reply) {
-		if (question_option_hotkeys.contains(reply)){
+		if (question_option_hotkeys.contains(reply.toUpperCase())){
 			return true;
 		}
 		else {

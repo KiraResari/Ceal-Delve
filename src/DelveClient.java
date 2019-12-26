@@ -68,7 +68,7 @@ public class DelveClient {
 		
 		reply = question.request_and_validate_local_user_reply(user_input);
 		
-		if(reply.equals("N")) {
+		if(reply.toUpperCase().equals("N")) {
 			ask_server_address();
 		}
 	}
@@ -88,7 +88,7 @@ public class DelveClient {
 		
 		reply = question.request_and_validate_local_user_reply(user_input);
 		
-		if(reply.equals("Y")) {
+		if(reply.toUpperCase().equals("Y")) {
 			return true;
 		}
 		return false;

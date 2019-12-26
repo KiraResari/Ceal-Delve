@@ -64,7 +64,7 @@ public class ServerBattleController {
 		String question_message = "What do you want to do?";
 		List<QuestionOption> question_options = get_player_turn_options();
 		Communication reply_from_client = server_messaging_system.send_question_to_client(Question.construct_question_with_custom_options(question_message, question_options));
-		String player_choice = reply_from_client.message;
+		String player_choice = reply_from_client.message.toUpperCase();
 		if(player_choice.equals("A")) {
 			player_attack();
 		}

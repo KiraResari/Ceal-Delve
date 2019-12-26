@@ -164,7 +164,7 @@ public class ServerGameController {
 			question = Question.construct_yes_no_question(question_message);
 			reply = server_messaging_system.send_question_to_client(question);
 			
-			if(reply.message.equals("Y")) {
+			if(reply.message.toUpperCase().equals("Y")) {
 				server_messaging_system.send_message_to_client("", true);
 				break;
 			}
