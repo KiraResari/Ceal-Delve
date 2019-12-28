@@ -121,4 +121,13 @@ public class ServerMessagingSystem {
 			return null;
 		}
 	}
+
+
+	public void print_game_over_message() throws ClientDisconnectedException {
+		send_message_to_client("//===============\\\\", true);
+		send_message_to_client("||               ||", true);
+		send_message_to_client("||   GAME OVER   ||", true);
+		send_message_to_client("||               ||", true);
+		send_message_to_client("\\\\===============//", true);
+	}
 }

@@ -52,19 +52,6 @@ public class ClientGameController {
 			System.out.println("What do you want to call out?");
 		}
 	}
-	
-	//This function sends a String Terminator to the server, signaling that the client is ready for the next request
-	public void send_string_terminator() {
-		try {
-		Communication incoming_communication = new Communication(CommunicationTypes.over, "");
-			object_output_to_server.writeObject(incoming_communication);
-			object_output_to_server.flush();
-		}
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
-	}
 
 	//Handles incoming communications from the server
 	public void await_server_communication() throws ServerDisconnectedException {

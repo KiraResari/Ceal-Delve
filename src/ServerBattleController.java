@@ -94,14 +94,18 @@ public class ServerBattleController {
 			server_messaging_system.send_message_to_client("You take " + reduced_damage + " less damage because you defended and regain " + reduced_damage + " energy.", false);
 		}
 		
+		character_take_damage(damage);
+		
+		server_messaging_system.send_message_to_client("", true);
+	}
+
+	public void character_take_damage(int damage) throws ClientDisconnectedException {
 		if(damage > 0) {
 			character.current_life -= damage;
 			server_messaging_system.send_message_to_client("You take " + damage + " damage.", false);
 		} else {
 			server_messaging_system.send_message_to_client("...but you don't takes any damage.", false);
 		}
-		
-		server_messaging_system.send_message_to_client("", true);
 	}
 	
 	public void check_victor() {
@@ -129,17 +133,13 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client(" ", true);
 	}
 	
-	public void defeat() throws ClientDisconnectedException {
+	private void defeat() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client(enemy.player_kill_narrative, false);
 		server_messaging_system.send_message_to_client("", true);
-		server_messaging_system.send_message_to_client("//===============\\\\", true);
-		server_messaging_system.send_message_to_client("||               ||", true);
-		server_messaging_system.send_message_to_client("||   GAME OVER   ||", true);
-		server_messaging_system.send_message_to_client("||               ||", true);
-		server_messaging_system.send_message_to_client("\\\\===============//", true);
+		server_messaging_system.print_game_over_message();
 		
 	}
-	
+
 	public void level_up() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("", true);
 		server_messaging_system.send_message_to_client("|=============|", true);
@@ -153,9 +153,9 @@ public class ServerBattleController {
 		character.max_energy *= 1.1;
 		character.experience_current -= character.experience_to_next_level;
 		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);
-		server_messaging_system.send_message_to_client("You are now a Lv" + character.level + " " + character.character_class + "!", false);
 		character.current_life = character.max_life;
 		character.current_energy = character.max_energy;
+		server_messaging_system.send_message_to_client("You are now a Lv" + character.level + " " + character.character_class + "!", false);
 		server_messaging_system.send_message_to_client("Your Life and Energy have been fully restored.", false);
 		server_messaging_system.send_message_to_client("", true);
 	}

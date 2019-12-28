@@ -14,7 +14,11 @@ public class ServerGameController {
 	ObjectOutputStream object_output_to_client;
 	ServerMessagingSystem server_messaging_system;
 	ServerBattleController server_battle_controller;
-	Character player_character;
+	Dungeon dungeon;
+	Character character;
+	int starting_coordinate_north = 0;
+	int starting_coordinate_east = 0;
+	
 
 	public ServerGameController(Socket client, String version) {
 		this.client = client;
@@ -33,10 +37,17 @@ public class ServerGameController {
 		
 		//First battle
 		first_battle();
-		if(player_character.current_life <= 0) {
+		if(character.current_life <= 0) {
 			return;
 		}
 		
+		initialize_dungeon_and_enter_first_room();
+		
+		while(true) {
+			dungeon.ask_which_way_to_go_and_move_to_next_room();
+		}
+		
+		/*
 		//Further battles
 		for(int i = 0; i < 4; i++) {
 			battle(new EnemyZevi());
@@ -44,6 +55,13 @@ public class ServerGameController {
 		
 		//Echo phase at the end of the game
 		echo_phase();
+		*/
+	}
+	
+	public void initialize_dungeon_and_enter_first_room() throws ClientDisconnectedException {
+		dungeon = new Dungeon(server_messaging_system, server_battle_controller, character);
+		server_messaging_system.send_message_to_client("After overcoming this first obstacle, you make your way deeper into the delve.", false);
+		dungeon.enter_room_at_coordinates(starting_coordinate_north, starting_coordinate_east);
 	}
 	
 	public void first_battle() throws ClientDisconnectedException {
@@ -58,7 +76,7 @@ public class ServerGameController {
 	
 	public void battle(Enemy enemy) throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("An enemy appears before you!", false);
-		server_battle_controller.battle(player_character, enemy);
+		server_battle_controller.battle(character, enemy);
 	}
 
 	public void echo_phase() throws ClientDisconnectedException {
@@ -102,13 +120,13 @@ public class ServerGameController {
 	}
 	
 	public void character_creation() throws ClientDisconnectedException {
-		player_character = new Character();
+		character = new Character();
 		
 		//Asks for a character name
-		ask_character_name(player_character);
+		ask_character_name(character);
 		
 		//Asks for the character's favorite element
-		ask_character_element(player_character);
+		ask_character_element(character);
 	}
 	
 	//Asks for the character name
