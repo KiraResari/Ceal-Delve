@@ -43,19 +43,9 @@ public class ServerGameController {
 		
 		initialize_dungeon_and_enter_first_room();
 		
-		while(true) {
+		while(character.current_life > 0) {
 			dungeon.ask_which_way_to_go_and_move_to_next_room();
 		}
-		
-		/*
-		//Further battles
-		for(int i = 0; i < 4; i++) {
-			battle(new EnemyZevi());
-		}
-		
-		//Echo phase at the end of the game
-		echo_phase();
-		*/
 	}
 	
 	public void initialize_dungeon_and_enter_first_room() throws ClientDisconnectedException {
@@ -77,19 +67,6 @@ public class ServerGameController {
 	public void battle(Enemy enemy) throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("An enemy appears before you!", false);
 		server_battle_controller.battle(character, enemy);
-	}
-
-	public void echo_phase() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You have reached the end of the delve.", false);
-		server_messaging_system.send_message_to_client("A great, empty cave unfolds before your eyes.", false);
-		server_messaging_system.send_message_to_client("Surely there's a great echo here.", false);
-		
-		while(true) {
-			Communication reply = server_messaging_system.send_free_text_entry_request_to_client("What do you want to call out?");
-			String incoming_message = reply.message;
-			server_messaging_system.send_message_to_client(incoming_message + "... " + incoming_message + "...... " + incoming_message + "......... ", false);
-			server_messaging_system.send_message_to_client("That was nice.", false);
-		}
 	}
 	
 	public void welcome_message(Socket client) throws IOException, ClientDisconnectedException{

@@ -9,7 +9,7 @@ public class ServerBattleController {
 	int damage;
 	
 	int iserialogy_cost = 5;
-	int iserialogy_power = 10;
+	int iserialogy_power_factor = 2;
 	int healing_kykli_power = 20;
 	int energy_water_power = 10;
 	
@@ -149,6 +149,7 @@ public class ServerBattleController {
 		character.level += 1;
 		character.attack += 1;
 		character.defense += 1;
+		character.iserialogy += 1;
 		character.max_life *= 1.1;
 		character.max_energy *= 1.1;
 		character.experience_current -= character.experience_to_next_level;
@@ -206,7 +207,7 @@ public class ServerBattleController {
 	public void player_iserialogy() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You invoke the Iserialogy " + character.element.name + " Blast!", false);
 		character.current_energy -= iserialogy_cost;
-		damage = iserialogy_power;
+		damage = character.iserialogy * iserialogy_power_factor;
 		if(enemy.weakness == character.element) {
 			server_messaging_system.send_message_to_client("You hit the enemy's weak point!", false);
 			damage *= 2;

@@ -13,7 +13,7 @@ public class DelveClient {
 	Socket server_connection;
 	String server_address = "127.0.0.1";
 	int server_port = 1337;
-	String version = "0.10";
+	String version = "1.00";
 	
 	BufferedReader server_input;
 	BufferedReader user_input = new BufferedReader(new InputStreamReader(System.in));

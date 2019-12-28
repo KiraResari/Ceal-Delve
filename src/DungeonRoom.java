@@ -12,11 +12,12 @@ public class DungeonRoom {
 	boolean enemy_present;
 	boolean treasure_present;
 	double treasure_chance = 0.2;
-	double enemy_chance = 0.5;
+	double enemy_chance = 0.7;
 	double treasure_chest_is_trapped_chance = 0.1;
-	int treasure_chest_explosion_damage = 10;
+	int treasure_chest_explosion_base_damage = 10;
 	double treasure_chest_µ_multiplier_lower = 1;
 	double treasure_chest_µ_multiplier_upper = 2;
+	int hamster_coordinates_seed = 10;
 	Random random_generator = new Random();
 	ServerBattleController server_battle_controller;
 	ServerMessagingSystem server_messaging_system;
@@ -46,6 +47,9 @@ public class DungeonRoom {
 		}
 		if(enemy_present){
 			trigger_battle();
+		}
+		if(character.current_life <= 0) {
+			return;
 		}
 		if(treasure_present){
 			trigger_looting();
@@ -94,7 +98,7 @@ public class DungeonRoom {
 		server_messaging_system.send_message_to_client("--BOOM!!!--", true);
 		server_messaging_system.send_message_to_client(" / | | | \\ ", true);
 		server_messaging_system.send_message_to_client("The treasure chest explodes in your face!", false);
-		int damage = treasure_chest_explosion_damage - character.defense;
+		int damage = treasure_chest_explosion_base_damage + depth - character.defense;
 		server_battle_controller.character_take_damage(damage);
 		if(character.current_life <= 0) {
 			character.current_life = 1;
@@ -114,10 +118,24 @@ public class DungeonRoom {
 
 	private void trigger_battle() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("An enemy awaits you here!", false);
-		Enemy enemy = generate_random_enemy();
+		Enemy enemy;
+		if(is_hamster_room()) {
+			enemy = generate_hamster();
+		}
+		else {
+			enemy = generate_random_enemy();
+		}
 		server_battle_controller.battle(character, enemy);
 		enemy_present = false;
 		server_messaging_system.send_message_to_client("", true);
+	}
+
+	private Enemy generate_hamster() {
+		Enemy enemy;
+		enemy = new EnemyHamster();
+		int rage_level = depth / hamster_coordinates_seed;
+		enemy.enrage(rage_level);
+		return enemy;
 	}
 
 	private Enemy generate_random_enemy() {
@@ -127,9 +145,7 @@ public class DungeonRoom {
 	}
 	
 	private List<Enemy> generate_available_enemies_list(){
-		List<Enemy> available_enemies = new ArrayList<Enemy>();
-		available_enemies.add(new EnemyZevi());
-		return available_enemies;
+		return AvailableEnemiesLists.get_available_enemies_by_depth(depth);
 	}
 
 	public void print_enter_room_message() throws ClientDisconnectedException {
@@ -161,12 +177,20 @@ public class DungeonRoom {
 	}
 
 	private void check_if_enemy_spawns_and_spawn_it() {
-		if(random_generator.nextDouble() < enemy_chance) {
+		if(random_generator.nextDouble() < enemy_chance || is_hamster_room()) {
 			enemy_present = true;
 		}
 		else {
 			enemy_present = false;
 		}
+	}
+	
+
+	private boolean is_hamster_room() {
+		if(coordinate_east % hamster_coordinates_seed == 0 && coordinate_north % hamster_coordinates_seed == 0 && coordinate_east == coordinate_north && coordinate_east > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	public void print_visited_before_message() throws ClientDisconnectedException {
