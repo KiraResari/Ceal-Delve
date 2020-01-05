@@ -11,7 +11,7 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "1.0";
+	String version = "1.1";
 	int port = 1337;
 
 	public static void main(String[] args) {

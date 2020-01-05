@@ -12,9 +12,9 @@ public class EnemyBunneroo extends Enemy {
 		weakness = Elements.fauna;
 		max_life = 12;
 		current_life = max_life;
-		attack = 9;
-		defense = 4;
+		attack = 10;
+		defense = 3;
 		µ = 7;
-		experience = 5;
+		experience = 6;
 	}
 }

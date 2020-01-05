@@ -10,11 +10,11 @@ public class EnemyXervo extends Enemy {
 		defeat_narrative = "You triumphed over the Xervo.";
 		player_kill_narrative = "You were no match for the Xervo, and paid for it with your life.";
 		weakness = Elements.darkness;
-		max_life = 21;
+		max_life = 42;
 		current_life = max_life;
-		attack = 20;
-		defense = 9;
+		attack = 27;
+		defense = 8;
 		µ = 14;
-		experience = 13;
+		experience = 14;
 	}
 }

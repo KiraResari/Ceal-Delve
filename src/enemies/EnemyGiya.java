@@ -15,6 +15,6 @@ public class EnemyGiya extends Enemy {
 		attack = 9;
 		defense = 2;
 		µ = 6;
-		experience = 4;
+		experience = 5;
 	}
 }

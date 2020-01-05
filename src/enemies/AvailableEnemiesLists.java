@@ -112,7 +112,7 @@ public class AvailableEnemiesLists {
 		}
 		
 		for(Enemy enemy : available_enemies) {
-			enemy.enrage(rage_level);
+			EnrageEnemy.enrage(enemy, rage_level);
 		}
 		
 		return available_enemies;

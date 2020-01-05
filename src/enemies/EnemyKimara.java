@@ -10,11 +10,11 @@ public class EnemyKimara extends Enemy {
 		defeat_narrative = "You managed to best the Kimara!";
 		player_kill_narrative = "The Kimara painfully demonstrated your own mortality.";
 		weakness = Elements.chaos;
-		max_life = 22;
+		max_life = 50;
 		current_life = max_life;
-		attack = 23;
-		defense = 8;
+		attack = 30;
+		defense = 9;
 		µ = 15;
-		experience = 14;
+		experience = 15;
 	}
 }

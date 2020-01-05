@@ -10,11 +10,11 @@ public class EnemyNherin extends Enemy {
 		defeat_narrative = "The Nherin collapses at your feet.";
 		player_kill_narrative = "The Nherin obviously pierced some rather vital body parts of yours.";
 		weakness = Elements.fire;
-		max_life = 16;
+		max_life = 25;
 		current_life = max_life;
-		attack = 13;
-		defense = 8;
+		attack = 15;
+		defense = 5;
 		µ = 10;
-		experience = 9;
+		experience = 10;
 	}
 }

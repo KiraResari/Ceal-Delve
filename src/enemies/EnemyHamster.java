@@ -10,11 +10,11 @@ public class EnemyHamster extends Enemy {
 		defeat_narrative = "You somehow managed to hold your groudn agaisnt the Hamster.";
 		player_kill_narrative = "You have been trampled to death by the Hamsters.";
 		weakness = Elements.fire;
-		max_life = 50;
+		max_life = 1000;
 		current_life = max_life;
-		attack = 70;
-		defense = 20;
-		µ = 45;
-		experience = 42;
+		attack = 700;
+		defense = 100;
+		µ = 250;
+		experience = 500;
 	}
 }

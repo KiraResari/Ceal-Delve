@@ -7,6 +7,7 @@ import combatants.Character;
 import enemies.AvailableEnemiesLists;
 import enemies.Enemy;
 import enemies.EnemyHamster;
+import enemies.EnrageEnemy;
 import exceptions.ClientDisconnectedException;
 import messaging_system.Communication;
 import messaging_system.Question;
@@ -144,8 +145,8 @@ public class DungeonRoom {
 	private Enemy generate_hamster() {
 		Enemy enemy;
 		enemy = new EnemyHamster();
-		int rage_level = depth / hamster_coordinates_seed;
-		enemy.enrage(rage_level);
+		int rage_level = ((depth - 10) / hamster_coordinates_seed);
+		EnrageEnemy.enrage(enemy, rage_level);
 		return enemy;
 	}
 

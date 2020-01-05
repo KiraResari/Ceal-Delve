@@ -10,11 +10,11 @@ public class EnemyChelaine extends Enemy {
 		defeat_narrative = "You managed to beat the Chelaine!";
 		player_kill_narrative = "The Chelaine found a wholesome meal in you.";
 		weakness = Elements.water;
-		max_life = 20;
+		max_life = 40;
 		current_life = max_life;
-		attack = 17;
-		defense = 10;
+		attack = 23;
+		defense = 7;
 		µ = 13;
-		experience = 11;
+		experience = 13;
 	}
 }

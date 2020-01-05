@@ -13,8 +13,8 @@ public class EnemyZevi extends Enemy {
 		max_life = 10;
 		current_life = max_life;
 		attack = 7;
-		defense = 2;
+		defense = 1;
 		µ = 5;
-		experience = 3;
+		experience = 4;
 	}
 }

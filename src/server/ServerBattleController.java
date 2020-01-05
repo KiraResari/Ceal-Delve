@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import combatants.Character;
+import combatants.CharacterLvUp;
 import combatants.Combatant;
 import enemies.Enemy;
 import exceptions.ClientDisconnectedException;
@@ -11,10 +12,10 @@ import messaging_system.Question;
 import messaging_system.QuestionOption;
 
 public class ServerBattleController {
-	Character character;
+	public Character character;
 	Combatant victor;
 	Enemy enemy;
-	ServerMessagingSystem server_messaging_system;
+	public ServerMessagingSystem server_messaging_system;
 	int damage;
 	
 	int iserialogy_cost = 5;
@@ -131,7 +132,7 @@ public class ServerBattleController {
 		server_messaging_system.send_message_to_client("You gained " + enemy.experience + " Exp,", false);
 		character.experience_current += enemy.experience;
 		if(character.experience_current >= character.experience_to_next_level) {
-			level_up();
+			CharacterLvUp.level_up(character, this);
 		}
 		server_messaging_system.send_message_to_client("You found " + enemy.µ + "µ.", false);
 		character.µ += enemy.µ;
@@ -149,27 +150,6 @@ public class ServerBattleController {
 		
 	}
 
-	public void level_up() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("", true);
-		server_messaging_system.send_message_to_client("|=============|", true);
-		server_messaging_system.send_message_to_client("|| LEVEL UP! ||", true);
-		server_messaging_system.send_message_to_client("|=============|", true);
-		server_messaging_system.send_message_to_client("", true);
-		character.level += 1;
-		character.attack += 1;
-		character.defense += 1;
-		character.iserialogy += 1;
-		character.max_life *= 1.1;
-		character.max_energy *= 1.1;
-		character.experience_current -= character.experience_to_next_level;
-		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);
-		character.current_life = character.max_life;
-		character.current_energy = character.max_energy;
-		server_messaging_system.send_message_to_client("You are now a Lv" + character.level + " " + character.character_class + "!", false);
-		server_messaging_system.send_message_to_client("Your Life and Energy have been fully restored.", false);
-		server_messaging_system.send_message_to_client("", true);
-	}
-	
 	public void print_player_turn_gui() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("//==================================================", true);
 		server_messaging_system.send_message_to_client("|| " + character.name, true);

@@ -10,11 +10,11 @@ public class EnemyThyla extends Enemy {
 		defeat_narrative = "You conquered the Thyla threat.";
 		player_kill_narrative = "The Thyla completely savaged you, and will now chew on your bones.";
 		weakness = Elements.light;
-		max_life = 15;
+		max_life = 19;
 		current_life = max_life;
-		attack = 12;
-		defense = 7;
+		attack = 15;
+		defense = 5;
 		µ = 9;
-		experience = 8;
+		experience = 9;
 	}
 }

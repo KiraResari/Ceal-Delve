@@ -10,11 +10,11 @@ public class EnemyRouiean extends Enemy {
 		defeat_narrative = "You managed to put down the Rouiean.";
 		player_kill_narrative = "The Rouiean tackled you to pulp.";
 		weakness = Elements.flora;
-		max_life = 19;
+		max_life = 31;
 		current_life = max_life;
-		attack = 15;
-		defense = 10;
+		attack = 20;
+		defense = 6;
 		µ = 12;
-		experience = 11;
+		experience = 12;
 	}
 }
