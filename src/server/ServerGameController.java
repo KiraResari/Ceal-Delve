@@ -17,6 +17,7 @@ import messaging_system.Communication;
 import messaging_system.CommunicationTypes;
 import messaging_system.Question;
 import messaging_system.QuestionOption;
+import town.Town;
 
 public class ServerGameController {
 	
@@ -27,10 +28,11 @@ public class ServerGameController {
 	ObjectOutputStream object_output_to_client;
 	ServerMessagingSystem server_messaging_system;
 	ServerBattleController server_battle_controller;
-	Dungeon dungeon;
+	public Dungeon dungeon;
+	public Town town;
 	Character character;
-	int starting_coordinate_north = 0;
-	int starting_coordinate_east = 0;
+	public int starting_coordinate_north = 0;
+	public int starting_coordinate_east = 0;
 	
 
 	public ServerGameController(Socket client, String version) {
@@ -54,6 +56,7 @@ public class ServerGameController {
 			return;
 		}
 		
+		initialize_town();
 		initialize_dungeon_and_enter_first_room();
 		
 		while(character.current_life > 0) {
@@ -61,8 +64,12 @@ public class ServerGameController {
 		}
 	}
 	
+	private void initialize_town() {
+		town = new Town(this, server_messaging_system, character);
+	}
+
 	public void initialize_dungeon_and_enter_first_room() throws ClientDisconnectedException {
-		dungeon = new Dungeon(server_messaging_system, server_battle_controller, character);
+		dungeon = new Dungeon(this, server_messaging_system, server_battle_controller, character);
 		server_messaging_system.send_message_to_client("After overcoming this first obstacle, you make your way deeper into the delve.", false);
 		dungeon.enter_room_at_coordinates(starting_coordinate_north, starting_coordinate_east);
 	}

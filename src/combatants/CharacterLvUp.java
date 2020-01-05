@@ -21,18 +21,11 @@ public class CharacterLvUp {
 		increase_max_energy(character);
 		decrease_current_experience(character);
 		increase_required_experience(character);
-		fully_heal_life(character);
-		fully_heal_energy(character);
+		CharacterOperations.fully_heal_life(character);
+		CharacterOperations.fully_heal_energy(character);
 		send_lv_up_message_body(character, serverBattleController);
 	}
 
-	public static void fully_heal_energy(Character character) {
-		character.current_energy = character.max_energy;
-	}
-
-	public static void fully_heal_life(Character character) {
-		character.current_life = character.max_life;
-	}
 
 	public static void increase_required_experience(Character character) {
 		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);

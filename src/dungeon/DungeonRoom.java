@@ -12,6 +12,7 @@ import exceptions.ClientDisconnectedException;
 import messaging_system.Communication;
 import messaging_system.Question;
 import server.ServerBattleController;
+import server.ServerGameController;
 import server.ServerMessagingSystem;
 
 public class DungeonRoom {
@@ -23,6 +24,7 @@ public class DungeonRoom {
 	boolean visited_before = false;
 	boolean enemy_present;
 	boolean treasure_present;
+	boolean town_access_present;
 	double treasure_chance = 0.2;
 	double enemy_chance = 0.7;
 	double treasure_chest_is_trapped_chance = 0.1;
@@ -33,16 +35,38 @@ public class DungeonRoom {
 	Random random_generator = new Random();
 	ServerBattleController server_battle_controller;
 	ServerMessagingSystem server_messaging_system;
+	ServerGameController server_game_controller;
 	Character character;
 	
-	public DungeonRoom(int coordinate_north, int coordinate_east, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller, Character character) {
+	public DungeonRoom(int coordinate_north, int coordinate_east, ServerGameController server_game_controller, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller, Character character) {
 		this.coordinate_north = coordinate_north;
 		this.coordinate_east = coordinate_east;
 		this.depth = coordinate_north + coordinate_east;
 		this.server_messaging_system = server_messaging_system;
 		this.server_battle_controller = server_battle_controller;
+		this.server_game_controller = server_game_controller;
 		this.character = character;
+		determine_town_access();
 		generate_random_room_description();
+	}
+	
+	private void determine_town_access() {
+		town_access_present = false;
+		if(is_starting_room() || is_portal_room()) {
+			town_access_present = true;
+		}
+	}
+
+	private boolean is_portal_room() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean is_starting_room() {
+		if(this.coordinate_east == server_game_controller.starting_coordinate_east && this.coordinate_north == server_game_controller.starting_coordinate_north) {
+			return true;
+		}
+		return false;
 	}
 
 	public void enter_room() throws ClientDisconnectedException {
@@ -66,24 +90,35 @@ public class DungeonRoom {
 		if(treasure_present){
 			trigger_looting();
 		}
+		if(town_access_present) {
+			print_town_access_message();
+		}
+	}
+
+	private void print_town_access_message() throws ClientDisconnectedException {
+		if(is_starting_room()) {
+			server_messaging_system.send_message_to_client(strings.DungeonExploration.town_access_starting_room, false);
+		} else if(is_portal_room()) {
+			server_messaging_system.send_message_to_client(strings.DungeonExploration.town_access_portal, false);
+		}
 	}
 
 	private void print_nothing_here_message() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("There's nothing interesting to be found in this particular cave.", false);
+		server_messaging_system.send_message_to_client(strings.DungeonExploration.empty_cave, false);
 	}
 
 	private void trigger_looting() throws ClientDisconnectedException {
-		Communication reply = server_messaging_system.send_question_to_client(Question.construct_yes_no_question("You find a treasure chest. Do you want to open it?"));
-		if(reply.message.toUpperCase().equals("Y")) {
+		Communication reply = server_messaging_system.send_question_to_client(Question.construct_yes_no_question(strings.DungeonExploration.treasure_chest_find));
+		if(reply.message.toUpperCase().equals(strings.Hotkeys.yes)) {
 			open_treasure_chest();
 		}else{
-			server_messaging_system.send_message_to_client("You leave the treasure chest where it is.", false);
+			server_messaging_system.send_message_to_client(strings.DungeonExploration.treasure_chest_leave, false);
 		}
 		server_messaging_system.send_message_to_client("", true);
 	}
 
 	private void open_treasure_chest() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You open the treasure chest.", false);
+		server_messaging_system.send_message_to_client(strings.DungeonExploration.treasure_chest_open, false);
 		if(treasure_chest_is_trapped()) {
 			treasure_chest_explodes();
 		}
@@ -207,7 +242,6 @@ public class DungeonRoom {
 
 	public void print_visited_before_message() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("You realize you've been in this cave once before.", false);
-		server_messaging_system.send_message_to_client("", true);
 	}
 	
 	private void generate_random_room_description() {
