@@ -9,4 +9,4 @@ EXPOSE 1337
 
 # Run Delve Server
 WORKDIR /bin
-ENTRYPOINT ["java", "DelveServer"]
+ENTRYPOINT ["java", "server.DelveServer"]

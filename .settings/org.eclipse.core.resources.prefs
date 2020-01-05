@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
-encoding//src/ClientGameController.java=UTF-8
-encoding//src/DelveClient.java=UTF-8
-encoding//src/DelveServer.java=UTF-8
-encoding//src/Elements.java=UTF-8
-encoding//src/ServerGameController.java=UTF-8
+encoding//src/client/ClientGameController.java=UTF-8
+encoding//src/client/DelveClient.java=UTF-8
+encoding//src/elements/Elements.java=UTF-8
+encoding//src/server/DelveServer.java=UTF-8
+encoding//src/server/ServerGameController.java=UTF-8
