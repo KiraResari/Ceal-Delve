@@ -10,14 +10,14 @@ How you combine these options is up to you
 
 You have three options for running the Delve Server:
 1.) Run Delve Server.exe (requires java version 1.8 or newer)
-2.) Using cmd, navigate to Ceal Delve/bin and run the command `java DelveServer` (requires java version 1.8 or newer)
+2.) Using cmd, navigate to Ceal Delve/bin and run the command `java server.DelveServer` (requires java version 1.8 or newer)
 3.) Using cmd, navigate to Ceal Delve and run the command `docker-compose up` (requires Docker installed and running)
 
 The Delve Client will run as a non-interactive console, displaying messages received and sent to the client
 
 You have two options for running the Delve Client:
 1.) Run Delve Client.exe (requires java version 1.8 or newer)
-2.) Using cmd, navigate to Ceal Delve/bin and run the command `java DelveClient` (requires java version 1.8 or newer)
+2.) Using cmd, navigate to Ceal Delve/bin and run the command `java client.DelveClient` (requires java version 1.8 or newer)
 
 Once the Delve Client is running, you will be prompted to select whether you want to play locally, or over network.
 If the Delve Server is running on the same machine as the Delve Server, simply select [L] Local Machine.
