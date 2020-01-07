@@ -10,8 +10,7 @@ public class CharacterOperations {
 	}
 
 	public static void subtract_µ(Character character, int amount) {
-		character.µ -= amount;
-		
+		character.µ -= amount;	
 	}
 
 	public static int return_missing_life(Character character) {

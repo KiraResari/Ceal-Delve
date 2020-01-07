@@ -26,28 +26,27 @@ public class CharacterLvUp {
 		send_lv_up_message_body(character, serverBattleController);
 	}
 
-
-	public static void increase_required_experience(Character character) {
+	private static void increase_required_experience(Character character) {
 		character.experience_to_next_level = (int) Math.ceil(character.experience_to_next_level * 1.1);
 	}
 
-	public static void decrease_current_experience(Character character) {
+	private static void decrease_current_experience(Character character) {
 		character.experience_current -= character.experience_to_next_level;
 	}
 
-	public static void increase_iserialogy(Character character) {
+	private static void increase_iserialogy(Character character) {
 		character.iserialogy = (int) Math.ceil(character.iserialogy * iserialogy_gain_factor);
 	}
 
-	public static void increase_defense(Character character) {
+	private static void increase_defense(Character character) {
 		character.defense = (int) Math.ceil(character.defense * defense_gain_factor);
 	}
 
-	public static void increase_attack(Character character) {
+	private static void increase_attack(Character character) {
 		character.attack = (int) Math.ceil(character.attack * attack_gain_factor);
 	}
 
-	public static void increase_level(Character character) {
+	private static void increase_level(Character character) {
 		character.level += level_gain_summand;
 	}
 

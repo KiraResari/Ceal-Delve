@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
 @SuiteDisplayName("Delve Test Case Suite")
-@SelectPackages("messaging_system")
+@SelectPackages({"messaging_system", "combatants", "elements", "enemies"})
 public class test_case_suite {
 	
 }
