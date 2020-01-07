@@ -38,8 +38,7 @@ public class Question implements Serializable {
 		}
 		else {
 			return false;
-		}
-			
+		}			
 	}
 	
 	private void generate_question_option_hotkey_list() {

@@ -20,10 +20,4 @@ public class Communication implements Serializable
         this.question=question;
         this.type=type;
     }
-
-    @Override
-    public String toString()
-    {
-        return  "type: " + type + ", message: " + message;
-    }
 }
