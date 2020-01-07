@@ -75,7 +75,7 @@ public class ServerMessagingSystem {
 			
 			//Checks for a valid reply
 			try {
-				if (question.validateReply(reply.message)){
+				if (question.validate_reply(reply.message)){
 					break;
 				}
 				else {

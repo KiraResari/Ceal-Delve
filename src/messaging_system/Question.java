@@ -16,7 +16,7 @@ public class Question implements Serializable {
 	private Question(String question_message, List<QuestionOption> question_options) {
 		this.question_message = question_message;
 		this.question_options = question_options;
-		generateQuestionOptionHotkeyList();
+		generate_question_option_hotkey_list();
 	}
 	
 	static public Question construct_yes_no_question(String question_message) {
@@ -32,7 +32,7 @@ public class Question implements Serializable {
 		return question;
 	}
 
-	public Boolean validateReply(String reply) {
+	public Boolean validate_reply(String reply) {
 		if (question_option_hotkeys.contains(reply.toUpperCase())){
 			return true;
 		}
@@ -42,7 +42,7 @@ public class Question implements Serializable {
 			
 	}
 	
-	private void generateQuestionOptionHotkeyList() {
+	private void generate_question_option_hotkey_list() {
 		question_option_hotkeys = new ArrayList<String>();
 		for(QuestionOption option : question_options) {
 			question_option_hotkeys.add(option.hotkey);
@@ -66,7 +66,7 @@ public class Question implements Serializable {
 			System.out.print("> ");
 			reply = user_input.readLine();
 			
-			if(validateReply(reply)) {
+			if(validate_reply(reply)) {
 				break;
 			}
 			else {
