@@ -61,7 +61,7 @@ public class ServerGameController {
 		}
 	}
 	
-	private void initialize_town() {
+	void initialize_town() {
 		town = new Town(this, server_messaging_system, character);
 	}
 
