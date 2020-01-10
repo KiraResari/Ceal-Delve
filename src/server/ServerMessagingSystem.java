@@ -1,6 +1,6 @@
 package server;
 import java.io.EOFException;
-import java.net.SocketException;
+import java.io.IOException;
 
 import exceptions.ClientDisconnectedException;
 import messaging_system.Communication;
@@ -31,9 +31,8 @@ public class ServerMessagingSystem implements Server_Messaging_System_Interface 
 		try {
 			server_object_stream.send_to_client(outgoing_communication);
 		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
+		catch (IOException e){
+			throw new ClientDisconnectedException("Occurred in: ServerMessagingSystem.send_message_to_client");
 		}
 		System.out.println("Sent message to client: " + message);
 		if(!autoscroll) {
@@ -46,12 +45,8 @@ public class ServerMessagingSystem implements Server_Messaging_System_Interface 
 		//Communication outgoing_communication = new Communication(CommunicationTypes.message, "Test question");
 		try {
 			server_object_stream.send_to_client(outgoing_communication);
-		} catch(SocketException e) {
+		} catch(IOException e) {
 			throw new ClientDisconnectedException("SocketException in send_question_to_client");
-		}
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
 		}
 		System.out.println("Sent question to client: " + question.question_message);
 		
@@ -85,9 +80,8 @@ public class ServerMessagingSystem implements Server_Messaging_System_Interface 
 		try {
 			server_object_stream.send_to_client(outgoing_communication);
 		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
+		catch (IOException e){
+			throw new ClientDisconnectedException("IOException in send_free_text_entry_request_to_client");
 		}
 		System.out.println("Sent free text entry request to client: " + message);
 		
