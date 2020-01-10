@@ -1,8 +1,5 @@
 package server;
 import java.io.EOFException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.SocketException;
 
 import exceptions.ClientDisconnectedException;
@@ -10,20 +7,12 @@ import messaging_system.Communication;
 import messaging_system.CommunicationTypes;
 import messaging_system.Question;
 
-public class ServerMessagingSystem {
+public class ServerMessagingSystem implements Server_Messaging_System_Interface {
 
-	ObjectInputStream object_input_from_client;
-	ObjectOutputStream object_output_to_client;
-	
-	public ServerMessagingSystem(Socket client) {
-		try {
-			object_output_to_client = new ObjectOutputStream(client.getOutputStream());
-			object_input_from_client = new ObjectInputStream(client.getInputStream());
-		} 
-		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
-			e.printStackTrace();
-		}
+	Server_Object_Stream server_object_stream;
+
+	public ServerMessagingSystem(Server_Object_Stream server_object_stream) {
+		this.server_object_stream = server_object_stream;
 	}
 	
 	
@@ -40,8 +29,7 @@ public class ServerMessagingSystem {
 		Communication outgoing_communication = new Communication(type, message);
 		
 		try {
-			object_output_to_client.writeObject(outgoing_communication);
-			object_output_to_client.flush();
+			server_object_stream.send_to_client(outgoing_communication);
 		} 
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
@@ -57,8 +45,7 @@ public class ServerMessagingSystem {
 		Communication outgoing_communication = new Communication(CommunicationTypes.question, question);
 		//Communication outgoing_communication = new Communication(CommunicationTypes.message, "Test question");
 		try {
-			object_output_to_client.writeObject(outgoing_communication);
-			object_output_to_client.flush();
+			server_object_stream.send_to_client(outgoing_communication);
 		} catch(SocketException e) {
 			throw new ClientDisconnectedException("SocketException in send_question_to_client");
 		}
@@ -96,8 +83,7 @@ public class ServerMessagingSystem {
 		Communication outgoing_communication = new Communication(type, message);
 		
 		try {
-			object_output_to_client.writeObject(outgoing_communication);
-			object_output_to_client.flush();
+			server_object_stream.send_to_client(outgoing_communication);
 		} 
 		catch (Exception e){
 			System.out.println("Error Occurred: " + e);
@@ -110,9 +96,9 @@ public class ServerMessagingSystem {
 	}
 	
 	//Awaits a reply from the client
-	public Communication await_client_reply() throws ClientDisconnectedException {
+	private Communication await_client_reply() throws ClientDisconnectedException {
 		try {
-			Communication comm = (Communication) object_input_from_client.readObject();
+			Communication comm = server_object_stream.get_reply_from_client();
 			String message = comm.message;
 			
 			System.out.println("Received message from client: " + message);
@@ -126,14 +112,5 @@ public class ServerMessagingSystem {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-
-	public void print_game_over_message() throws ClientDisconnectedException {
-		send_message_to_client("//===============\\\\", true);
-		send_message_to_client("||               ||", true);
-		send_message_to_client("||   GAME OVER   ||", true);
-		send_message_to_client("||               ||", true);
-		send_message_to_client("\\\\===============//", true);
 	}
 }

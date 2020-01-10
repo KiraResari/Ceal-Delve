@@ -53,8 +53,10 @@ class Question_Test {
 		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
 		question_options.add(new QuestionOption("Arbitrary test option", expected));
 		String question_message = "Arbirary question message";
+		
 		Question question = Question.construct_question_with_custom_options(question_message, question_options);
 		String actual = question.question_options.get(0).hotkey;
+		
 		assertEquals(expected, actual, "Hotkey of question option did not match provided hotkey.");
 	}
 	
@@ -75,7 +77,9 @@ class Question_Test {
 	@Test
 	public void validate_reply_returns_false_for_invalid_reply() {
 		Question question = Question.construct_yes_no_question("Arbitrary question message");
+		
 		Boolean result = question.validate_reply("z");
+		
 		assertFalse(result, "Invalid reply was wrongly recognized as valid");
 	}
 

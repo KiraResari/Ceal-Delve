@@ -7,6 +7,7 @@ import combatants.CharacterLvUp;
 import combatants.Combatant;
 import enemies.Enemy;
 import exceptions.ClientDisconnectedException;
+import messages.Messages;
 import messaging_system.Communication;
 import messaging_system.Question;
 import messaging_system.QuestionOption;
@@ -146,7 +147,7 @@ public class ServerBattleController {
 	private void defeat() throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client(enemy.player_kill_narrative, false);
 		server_messaging_system.send_message_to_client("", true);
-		server_messaging_system.print_game_over_message();
+		Messages.print_game_over_message(server_messaging_system);
 		
 	}
 

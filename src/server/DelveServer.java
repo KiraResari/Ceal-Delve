@@ -11,8 +11,9 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "1.2";
+	String version = "1.3";
 	int port = 1337;
+	Server_Object_Stream server_object_stream;
 
 	public static void main(String[] args) {
 		DelveServer s = new DelveServer();
@@ -44,6 +45,7 @@ public class DelveServer {
 		while(true) {
 			//Accept incoming connections
 			client = server.accept();
+			server_object_stream = new Server_Object_Stream(client);
 			
 			try {
 				//Record client Address
@@ -51,7 +53,7 @@ public class DelveServer {
 				System.out.println("Incoming client from: " + client_address);
 				
 				//Initiate Game for that client
-				ServerGameController game_controller = new ServerGameController(client, version);
+				ServerGameController game_controller = new ServerGameController(server_object_stream, version);
 				game_controller.game_init();
 			}
 			catch (ClientDisconnectedException e){

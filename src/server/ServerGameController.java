@@ -1,8 +1,6 @@
 package server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +11,8 @@ import elements.Elements;
 import enemies.Enemy;
 import enemies.EnemyZevi;
 import exceptions.ClientDisconnectedException;
+import messages.Messages;
 import messaging_system.Communication;
-import messaging_system.CommunicationTypes;
 import messaging_system.Question;
 import messaging_system.QuestionOption;
 import town.Town;
@@ -22,12 +20,11 @@ import town.Town;
 public class ServerGameController {
 	
 	String text_buffer;
-	Socket client;
 	String version;
 	ObjectInputStream object_input_from_client;
-	ObjectOutputStream object_output_to_client;
 	ServerMessagingSystem server_messaging_system;
 	ServerBattleController server_battle_controller;
+	Server_Object_Stream server_object_stream;
 	public Dungeon dungeon;
 	public Town town;
 	Character character;
@@ -35,17 +32,17 @@ public class ServerGameController {
 	public int starting_coordinate_east = 0;
 	
 
-	public ServerGameController(Socket client, String version) {
-		this.client = client;
+	public ServerGameController(Server_Object_Stream server_object_stream, String version) {
+		this.server_object_stream = server_object_stream;
 		this.version = version;
-		server_messaging_system = new ServerMessagingSystem(client);
+		server_messaging_system = new ServerMessagingSystem(server_object_stream);
 		server_battle_controller = new ServerBattleController(server_messaging_system);
 	}
 	
 	//The functions that get carried out at the beginning of the game
 	public void game_init() throws IOException, ClientDisconnectedException{
 		//Sends welcome message
-		welcome_message(client);
+		Messages.print_welcome_message(server_messaging_system, version);
 		
 		//Character creation
 		character_creation();
@@ -87,33 +84,6 @@ public class ServerGameController {
 	public void battle(Enemy enemy) throws ClientDisconnectedException {
 		server_messaging_system.send_message_to_client("An enemy appears before you!", false);
 		server_battle_controller.battle(character, enemy);
-	}
-	
-	public void welcome_message(Socket client) throws IOException, ClientDisconnectedException{
-		server_messaging_system.send_message_to_client("        //------------------------//", true);
-		server_messaging_system.send_message_to_client("       // Welcome to...          //", true);
-		server_messaging_system.send_message_to_client("      //                        //", true);
-		server_messaging_system.send_message_to_client("     // THE CHRONICLES OF CEAL //", true);
-		server_messaging_system.send_message_to_client("    //          ~             //", true);
-		server_messaging_system.send_message_to_client("   //     DEEPER DELVING     //", true);
-		server_messaging_system.send_message_to_client("  //                        //", true);
-		server_messaging_system.send_message_to_client(" //         by Kira Resari //", true);
-		server_messaging_system.send_message_to_client("//------------------------//", true);
-		server_messaging_system.send_message_to_client("Server Version " + version, true);
-		server_messaging_system.send_message_to_client("", true);
-		System.out.println("Sent welcome message");
-	}
-	
-	//Waits for the client to send a String Terminator before proceeding
-	public void await_over() throws IOException, ClientDisconnectedException{
-		System.out.println("Waiting for over-message...");
-		while(true) {
-			Communication reply = server_messaging_system.await_client_reply();
-			if(reply.type.equals(CommunicationTypes.over)){
-				break;
-			}
-		}
-		System.out.println("Received Over-message. Continuing.");
 	}
 	
 	public void character_creation() throws ClientDisconnectedException {
