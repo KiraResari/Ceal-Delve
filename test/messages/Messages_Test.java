@@ -2,6 +2,8 @@ package messages;
 
 import org.junit.jupiter.api.Test;
 
+import enemies.Enemy;
+import enemies.EnemyZevi;
 import exceptions.ClientDisconnectedException;
 import server.ServerMessagingSystem;
 import static org.mockito.Mockito.*;
@@ -42,5 +44,18 @@ class Messages_Test {
 		verify(server_messaging_system, times(2)).send_message_to_client("||               ||", true);
 		verify(server_messaging_system, times(1)).send_message_to_client("||   GAME OVER   ||", true);
 		verify(server_messaging_system, times(1)).send_message_to_client("\\\\===============//", true);
+	}
+
+	@Test
+	void print_battle_init_message_is_called_test() throws ClientDisconnectedException {
+		server_messaging_system = mock(ServerMessagingSystem.class);
+		Enemy enemy = new EnemyZevi();
+
+		Messages.print_battle_init_message(server_messaging_system, enemy);
+	
+		verify(server_messaging_system, times(3)).send_message_to_client(" ", true);
+		verify(server_messaging_system, times(2)).send_message_to_client("|=================|", true);
+		verify(server_messaging_system, times(1)).send_message_to_client("|| BATTLE START! ||", true);
+		verify(server_messaging_system, times(1)).send_message_to_client(enemy.entry_narrative, false);
 	}
 }

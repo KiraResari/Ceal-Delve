@@ -2,6 +2,7 @@ package messages;
 
 import java.io.IOException;
 
+import enemies.Enemy;
 import exceptions.ClientDisconnectedException;
 import server.ServerMessagingSystem;
 
@@ -29,5 +30,15 @@ public class Messages {
 		server_messaging_system.send_message_to_client("||   GAME OVER   ||", true);
 		server_messaging_system.send_message_to_client("||               ||", true);
 		server_messaging_system.send_message_to_client("\\\\===============//", true);
+	}
+	
+	public static void print_battle_init_message(ServerMessagingSystem server_messaging_system, Enemy enemy) throws ClientDisconnectedException{
+		server_messaging_system.send_message_to_client(" ", true);
+		server_messaging_system.send_message_to_client("|=================|", true);
+		server_messaging_system.send_message_to_client("|| BATTLE START! ||", true);
+		server_messaging_system.send_message_to_client("|=================|", true);
+		server_messaging_system.send_message_to_client(" ", true);
+		server_messaging_system.send_message_to_client(enemy.entry_narrative, false);
+		server_messaging_system.send_message_to_client(" ", true);
 	}
 }

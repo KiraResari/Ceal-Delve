@@ -39,15 +39,11 @@ public class ServerGameController {
 		server_battle_controller = new ServerBattleController(server_messaging_system);
 	}
 	
-	//The functions that get carried out at the beginning of the game
 	public void game_init() throws IOException, ClientDisconnectedException{
-		//Sends welcome message
 		Messages.print_welcome_message(server_messaging_system, version);
 		
-		//Character creation
 		character_creation();
 		
-		//First battle
 		first_battle();
 		if(character.current_life <= 0) {
 			return;
@@ -88,15 +84,10 @@ public class ServerGameController {
 	
 	public void character_creation() throws ClientDisconnectedException {
 		character = new Character();
-		
-		//Asks for a character name
 		ask_character_name(character);
-		
-		//Asks for the character's favorite element
 		ask_character_element(character);
 	}
 	
-	//Asks for the character name
 	public void ask_character_name(Character player_character) throws ClientDisconnectedException {
 		Communication reply = server_messaging_system.send_free_text_entry_request_to_client("What is your name?");
 		player_character.name = reply.message;
@@ -108,11 +99,9 @@ public class ServerGameController {
 	}
 	
 	public void ask_character_element(Character player_character) throws ClientDisconnectedException {
-		
 		Communication reply;
 		int element_id;
 		
-		//Sends the question
 		while(true) {
 			String question_message = "What is your favourite element?";
 			List<QuestionOption> question_options = new ArrayList<QuestionOption>();
@@ -140,9 +129,6 @@ public class ServerGameController {
 				server_messaging_system.send_message_to_client("Okay, then let me ask again:", true);
 			}
 		}
-		
-		//Assigns the element to the character
 		player_character.element = Elements.get_element_by_id(element_id);
-		
 	}
 }
