@@ -41,4 +41,11 @@ public class Messages {
 		server_messaging_system.send_message_to_client(enemy.entry_narrative, false);
 		server_messaging_system.send_message_to_client(" ", true);
 	}
+
+	public static void print_enter_town_message(ServerMessagingSystem server_messaging_system) throws ClientDisconnectedException {
+		server_messaging_system.send_message_to_client(strings.Town.title_bars, true);
+		server_messaging_system.send_message_to_client(strings.Town.title, true);
+		server_messaging_system.send_message_to_client(strings.Town.title_bars, true);
+		server_messaging_system.send_message_to_client("", true);
+	}
 }

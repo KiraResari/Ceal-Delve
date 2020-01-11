@@ -1,6 +1,5 @@
 package server;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -137,7 +136,6 @@ class ServerBattleController_Test {
 		String player_response = strings.Hotkeys.iserialogy;
 		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
 		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
-		int expected_damage = server_battle_controller.calculate_iserialogy_damage_dealt_by_player();
 		character.element = enemy.weakness;
 		
 		server_battle_controller.player_turn();

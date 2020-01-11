@@ -58,4 +58,15 @@ class Messages_Test {
 		verify(server_messaging_system, times(1)).send_message_to_client("|| BATTLE START! ||", true);
 		verify(server_messaging_system, times(1)).send_message_to_client(enemy.entry_narrative, false);
 	}
+
+	@Test
+	void print_enter_town_message_is_called_test() throws ClientDisconnectedException {
+		server_messaging_system = mock(ServerMessagingSystem.class);
+
+		Messages.print_enter_town_message(server_messaging_system);
+	
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Town.title, true);
+		verify(server_messaging_system, times(2)).send_message_to_client(strings.Town.title_bars, true);
+		verify(server_messaging_system, times(1)).send_message_to_client("", true);
+	}
 }

@@ -24,15 +24,8 @@ public class Town {
 	}
 	
 	public void enter() throws ClientDisconnectedException {
-		send_enter_town_message();
+		messages.Messages.print_enter_town_message(server_messaging_system);
 		ask_and_perform_activity();
-	}
-
-	private void send_enter_town_message() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.Town.title_bars, true);
-		server_messaging_system.send_message_to_client(strings.Town.title, true);
-		server_messaging_system.send_message_to_client(strings.Town.title_bars, true);
-		server_messaging_system.send_message_to_client("", true);
 	}
 
 	private void ask_and_perform_activity() throws ClientDisconnectedException {
@@ -40,13 +33,13 @@ public class Town {
 		perform_activity(reply);
 	}
 
-	private Communication ask_what_to_do() throws ClientDisconnectedException {
+	Communication ask_what_to_do() throws ClientDisconnectedException {
 		Question question = build_activity_question();
 		Communication reply = server_messaging_system.send_question_to_client(question);
 		return reply;
 	}
 
-	private Question build_activity_question() {
+	Question build_activity_question() {
 		String question_message = strings.Town.activity_prompt1 + character.µ + strings.Town.activity_prompt2;
 		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
 		if(character_is_not_fully_restored()) {
@@ -66,7 +59,7 @@ public class Town {
 		return false;
 	}
 
-	private void perform_activity(Communication reply) throws ClientDisconnectedException {
+	void perform_activity(Communication reply) throws ClientDisconnectedException {
 		if(reply.message.toUpperCase().equals(strings.Hotkeys.rest)) {
 			rest();
 		}else if(reply.message.toUpperCase().equals(strings.Hotkeys.healing_kykli)) {
@@ -81,7 +74,7 @@ public class Town {
 		ask_and_perform_activity();
 	}
 
-	private void rest() throws ClientDisconnectedException {
+	void rest() throws ClientDisconnectedException {
 		int resting_cost;
 		resting_cost = determine_resting_cost();
 		if(character_cant_afford_rest(resting_cost)) {
