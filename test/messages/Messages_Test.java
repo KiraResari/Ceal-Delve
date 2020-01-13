@@ -65,8 +65,8 @@ class Messages_Test {
 
 		Messages.print_enter_town_message(server_messaging_system);
 	
-		verify(server_messaging_system, times(1)).send_message_to_client(strings.Town_Strings.title, true);
-		verify(server_messaging_system, times(2)).send_message_to_client(strings.Town_Strings.title_bars, true);
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Town_Strings.name_box_name, true);
+		verify(server_messaging_system, times(2)).send_message_to_client(strings.Town_Strings.name_box_bars, true);
 		verify(server_messaging_system, times(1)).send_message_to_client("", true);
 	}
 }

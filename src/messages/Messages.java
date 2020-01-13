@@ -43,9 +43,12 @@ public class Messages {
 	}
 
 	public static void print_enter_town_message(ServerMessagingSystem server_messaging_system) throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.Town_Strings.title_bars, true);
-		server_messaging_system.send_message_to_client(strings.Town_Strings.title, true);
-		server_messaging_system.send_message_to_client(strings.Town_Strings.title_bars, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_bars, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_sides, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_title, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_name, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_sides, true);
+		server_messaging_system.send_message_to_client(strings.Town_Strings.name_box_bars, true);
 		server_messaging_system.send_message_to_client("", true);
 	}
 }

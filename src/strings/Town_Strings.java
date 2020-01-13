@@ -1,8 +1,10 @@
 package strings;
 
 public class Town_Strings {
-	public static String title = "| TOWN |";
-	public static String title_bars = "||====||";
+	public static String name_box_bars =  "||========================||";
+	public static String name_box_sides = "|                          |";
+	public static String name_box_title = "| The Adventurer's Capital |";
+	public static String name_box_name =  "|          VIGARDE         |";
 
 	public static String activity_prompt1 = "What do you want to do? (You have ";
 	public static String activity_prompt2 = "µ)";
