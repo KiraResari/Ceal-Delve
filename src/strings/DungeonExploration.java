@@ -17,6 +17,7 @@ public class DungeonExploration {
 	public static String which_way_to_go_question_message_part2 = " | East ";
 	
 	public static String empty_cave = "There's nothing interesting to be found in this particular cave.";
+	public static String visited_before = "You realize you've been in this cave once before.";
 	
 	public static String treasure_chest_find = "You find a treasure chest. Do you want to open it?";
 	public static String treasure_chest_leave = "You leave the treasure chest where it is.";

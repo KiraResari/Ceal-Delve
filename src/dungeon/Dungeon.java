@@ -2,7 +2,6 @@ package dungeon;
 import java.util.ArrayList;
 import java.util.List;
 
-import combatants.Character;
 import exceptions.ClientDisconnectedException;
 import messaging_system.Communication;
 import messaging_system.Question;
@@ -16,18 +15,16 @@ public class Dungeon {
 	ServerMessagingSystem server_messaging_system;
 	ServerBattleController server_battle_controller;
 	ServerGameController server_game_controller;
-	Character character;
 	DungeonRoom current_room;
 	
-	public Dungeon(ServerGameController server_game_controller, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller, Character character) {
+	public Dungeon(ServerGameController server_game_controller, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller) {
 		this.server_messaging_system = server_messaging_system;
 		this.server_battle_controller = server_battle_controller;
 		this.server_game_controller = server_game_controller;
-		this.character = character;
 	}
 	
 	public void create_new_room_at_coordinates(int coordinate_north, int coordinate_east){
-		DungeonRoom room = new DungeonRoom(coordinate_north, coordinate_east, server_game_controller, server_messaging_system, server_battle_controller, character);
+		DungeonRoom room = new DungeonRoom(coordinate_north, coordinate_east, server_game_controller, server_messaging_system, server_battle_controller);
 		dungeon_rooms.add(room);
 	}
 	

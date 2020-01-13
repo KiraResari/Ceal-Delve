@@ -38,19 +38,19 @@ public class DungeonRoom {
 	ServerGameController server_game_controller;
 	Character character;
 	
-	public DungeonRoom(int coordinate_north, int coordinate_east, ServerGameController server_game_controller, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller, Character character) {
+	public DungeonRoom(int coordinate_north, int coordinate_east, ServerGameController server_game_controller, ServerMessagingSystem server_messaging_system, ServerBattleController server_battle_controller) {
 		this.coordinate_north = coordinate_north;
 		this.coordinate_east = coordinate_east;
 		this.depth = coordinate_north + coordinate_east;
 		this.server_messaging_system = server_messaging_system;
 		this.server_battle_controller = server_battle_controller;
 		this.server_game_controller = server_game_controller;
-		this.character = character;
+		this.character = server_game_controller.character;
 		determine_town_access();
 		generate_random_room_description();
 	}
 	
-	private void determine_town_access() {
+	void determine_town_access() {
 		town_access_present = false;
 		if(is_starting_room() || is_portal_room()) {
 			town_access_present = true;
@@ -215,7 +215,7 @@ public class DungeonRoom {
 	}
 	
 	private void check_if_treasure_spawns_and_spawn_it() {
-		if(random_generator.nextDouble() < treasure_chance) {
+		if(random_generator.nextDouble() < treasure_chance || is_hamster_room()) {
 			treasure_present = true;
 		}
 		else {
@@ -241,7 +241,7 @@ public class DungeonRoom {
 	}
 
 	public void print_visited_before_message() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client("You realize you've been in this cave once before.", false);
+		server_messaging_system.send_message_to_client(strings.DungeonExploration.visited_before, false);
 	}
 	
 	private void generate_random_room_description() {

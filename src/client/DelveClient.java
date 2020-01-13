@@ -24,10 +24,12 @@ public class DelveClient {
 	BufferedReader user_input = new BufferedReader(new InputStreamReader(System.in));
 	ObjectInputStream object_input_from_server;
 	ObjectOutputStream object_output_to_server;
+	Console console;
 	
 	public static void main(String[] args) {
-		DelveClient s = new DelveClient();
-		s.start_client();
+		DelveClient delve_client = new DelveClient();
+		delve_client.console = new Console();
+		delve_client.start_client();
 	}
 
 	public void start_client() {
@@ -38,17 +40,17 @@ public class DelveClient {
 				try {
 					server_connection = new Socket(server_address, server_port);
 					ClientGameController game_controller = new ClientGameController(server_connection);
-					System.out.println("Client Version " + version);
+					console.println("Client Version " + version);
 					game_controller.game_init();
 				}
 				catch (java.net.ConnectException e){
-					System.out.println("ERROR: Delve Server does not appear to be running; Attempted to connect to Server: " + server_address + " Port: " + server_port);
+					console.println("ERROR: Delve Server does not appear to be running; Attempted to connect to Server: " + server_address + " Port: " + server_port);
 					if(ask_change_server_type_question()) {
 						ask_server_type();
 					}
 				}
 				catch (java.net.SocketException | ServerDisconnectedException e){
-					System.out.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
+					console.println("ERROR: Disconnected from server. The Delve Server might have crashed.");
 					if(ask_change_server_type_question()) {
 						ask_server_type();
 					}
@@ -56,7 +58,7 @@ public class DelveClient {
 			}
 		}
 		catch (Exception e){
-			System.out.println("Error Occurred: " + e);
+			console.println("Error Occurred: " + e);
 			e.printStackTrace();
 		}
 	}
@@ -79,8 +81,8 @@ public class DelveClient {
 	}
 	
 	public void ask_server_address() throws IOException {
-		System.out.println("Please enter the server IP address");
-		System.out.print("> ");
+		console.println("Please enter the server IP address");
+		console.print("> ");
 		server_address = user_input.readLine();
 	}
 	

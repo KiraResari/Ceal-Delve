@@ -27,7 +27,7 @@ public class ServerGameController {
 	Server_Object_Stream server_object_stream;
 	public Dungeon dungeon;
 	public Town town;
-	Character character;
+	public Character character;
 	public int starting_coordinate_north = 0;
 	public int starting_coordinate_east = 0;
 	
@@ -62,7 +62,7 @@ public class ServerGameController {
 	}
 
 	public void initialize_dungeon_and_enter_first_room() throws ClientDisconnectedException {
-		dungeon = new Dungeon(this, server_messaging_system, server_battle_controller, character);
+		dungeon = new Dungeon(this, server_messaging_system, server_battle_controller);
 		server_messaging_system.send_message_to_client("After overcoming this first obstacle, you make your way deeper into the delve.", false);
 		dungeon.enter_room_at_coordinates(starting_coordinate_north, starting_coordinate_east);
 	}
