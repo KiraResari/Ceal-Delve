@@ -1,7 +1,6 @@
 package client;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -21,7 +20,6 @@ public class DelveClient {
 	String version = "1.00";
 	
 	BufferedReader server_input;
-	BufferedReader user_input = new BufferedReader(new InputStreamReader(System.in));
 	ObjectInputStream object_input_from_server;
 	ObjectOutputStream object_output_to_server;
 	Console console;
@@ -67,15 +65,15 @@ public class DelveClient {
 		String reply;
 		String question_message = "Is the Delve Server you want to connect to running on your local machine or the network?";
 		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
-		question_options.add(new QuestionOption("Local Machine", "L"));
-		question_options.add(new QuestionOption("Network", "N"));
+		question_options.add(new QuestionOption("Local Machine", strings.Hotkeys.local_machine));
+		question_options.add(new QuestionOption("Network", strings.Hotkeys.network));
 		Question question = Question.construct_question_with_custom_options(question_message, question_options);
 		
 		question.print_question();
 		
-		reply = question.request_and_validate_local_user_reply(user_input);
+		reply = question.request_and_validate_local_user_reply(console.get_user_input());
 		
-		if(reply.toUpperCase().equals("N")) {
+		if(reply.toUpperCase().equals(strings.Hotkeys.no)) {
 			ask_server_address();
 		}
 	}
@@ -83,7 +81,7 @@ public class DelveClient {
 	public void ask_server_address() throws IOException {
 		console.println("Please enter the server IP address");
 		console.print("> ");
-		server_address = user_input.readLine();
+		server_address = console.get_user_input();
 	}
 	
 	public Boolean ask_change_server_type_question() throws IOException {
@@ -93,9 +91,9 @@ public class DelveClient {
 		
 		question.print_question();
 		
-		reply = question.request_and_validate_local_user_reply(user_input);
+		reply = question.request_and_validate_local_user_reply(console.get_user_input());
 		
-		if(reply.toUpperCase().equals("Y")) {
+		if(reply.toUpperCase().equals(strings.Hotkeys.yes)) {
 			return true;
 		}
 		return false;

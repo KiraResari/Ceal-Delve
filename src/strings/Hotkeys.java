@@ -14,6 +14,9 @@ public class Hotkeys {
 	
 	public static String iserialogy = "I";
 	
+	public static String local_machine = "L";
+
+	public static String network = "N";
 	public static String no = "N";
 	public static String north = "N";
 	

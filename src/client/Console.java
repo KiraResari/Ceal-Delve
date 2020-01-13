@@ -19,7 +19,7 @@ public class Console {
 		System.out.print(message);
 	}
 
-	public String getUserInput(String message) throws IOException {
+	public String get_user_input() throws IOException {
 		print("> ");
 		return user_input.readLine();
 	}

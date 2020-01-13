@@ -1,5 +1,4 @@
 package messaging_system;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,13 +58,9 @@ public class Question implements Serializable {
 		System.out.println();
 	}
 	
-	public String request_and_validate_local_user_reply(BufferedReader user_input) throws IOException {
-		String reply;
+	public String request_and_validate_local_user_reply(String user_input) throws IOException {
 		while(true) {
-			System.out.print("> ");
-			reply = user_input.readLine();
-			
-			if(validate_reply(reply)) {
+			if(validate_reply(user_input)) {
 				break;
 			}
 			else {
@@ -73,6 +68,6 @@ public class Question implements Serializable {
 				System.out.print(question_option_hotkeys.toString());
 			}
 		}
-		return reply;
+		return user_input;
 	}
 }
