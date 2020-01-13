@@ -111,11 +111,13 @@ public class Town {
 
 	private boolean ask_whether_to_rest_for_price(int resting_cost) throws ClientDisconnectedException {
 		String question_message;
-		Question question;
-		Communication reply;
 		question_message = strings.Town_Strings.rest_ask1 + Integer.toString(resting_cost) + strings.Town_Strings.rest_ask2;
-		question = Question.construct_yes_no_question(question_message);
-		reply = server_messaging_system.send_question_to_client(question);	
+		return ask_yes_no_question_and_return_boolean(question_message);
+	}
+
+	private boolean ask_yes_no_question_and_return_boolean(String question_message) throws ClientDisconnectedException {
+		Question question = Question.construct_yes_no_question(question_message);
+		Communication reply = server_messaging_system.send_question_to_client(question);	
 		if(reply.message.toUpperCase().equals("Y")) {
 			return true;
 		}
@@ -142,22 +144,37 @@ public class Town {
 	}
 	
 	private boolean ask_whether_to_buy_a_healing_kykli() throws ClientDisconnectedException {
-		String question_message = strings.Town_Strings.buy_healing_kykli_ask1 + Integer.toString(healing_kykli_cost) + strings.Town_Strings.buy_healing_kykli_ask2 + character.healing_kykli_count + strings.Town_Strings.buy_healing_kykli_ask3;
-		Question question = Question.construct_yes_no_question(question_message);
-		Communication reply = server_messaging_system.send_question_to_client(question);	
-		if(reply.message.toUpperCase().equals("Y")) {
-			return true;
-		}
-		return false;
+		String question_message = strings.Town_Strings.buy_healing_kykli_ask + Integer.toString(healing_kykli_cost) + strings.Town_Strings.buy_ask_price_and_current_stock + character.healing_kykli_count + strings.Town_Strings.closing_bracket;
+		return ask_yes_no_question_and_return_boolean(question_message);
 	}
 	
 	private void send_healing_kykli_purchased_message() throws ClientDisconnectedException {
-		String message = strings.Town_Strings.buy_healing_kykli1 + character.healing_kykli_count + strings.Town_Strings.buy_healing_kykli2;
+		String message = strings.Town_Strings.buy_healing_kykli + character.healing_kykli_count + strings.Town_Strings.closing_bracket;
 		server_messaging_system.send_message_to_client(message, false);
 	}
 
-	private void buy_energy_water() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.Town_Strings.out_of_stock, false);
+	void buy_energy_water() throws ClientDisconnectedException {
+		if(character_cant_afford(energy_water_cost)) {
+			send_cant_afford_message(strings.Town_Strings.cant_afford_energy_water, energy_water_cost);
+		} else if (ask_whether_to_buy_energy_water()) {
+			perform_energy_water_purchase_transaction();
+			send_energy_water_purchased_message();
+		}
+	}
+
+	private boolean ask_whether_to_buy_energy_water() throws ClientDisconnectedException {
+		String question_message = strings.Town_Strings.buy_energy_water_ask + Integer.toString(energy_water_cost) + strings.Town_Strings.buy_ask_price_and_current_stock + character.energy_water_count + strings.Town_Strings.closing_bracket;
+		return ask_yes_no_question_and_return_boolean(question_message);
+	}
+
+	private void perform_energy_water_purchase_transaction() {
+		character.µ -= energy_water_cost;
+		character.energy_water_count+= 1;
+	}
+
+	private void send_energy_water_purchased_message() throws ClientDisconnectedException {
+		String message = strings.Town_Strings.buy_energy_water + character.energy_water_count + strings.Town_Strings.closing_bracket;
+		server_messaging_system.send_message_to_client(message, false);
 	}
 
 	private void enter_cave() throws ClientDisconnectedException {

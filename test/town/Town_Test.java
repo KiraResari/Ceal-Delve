@@ -1,7 +1,6 @@
 package town;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,13 @@ import messaging_system.Question;
 import messaging_system.QuestionOption;
 import server.ServerGameController;
 import server.ServerMessagingSystem;
+import test_case_suite.Server_Messaging_System_Test_Utils;
 
 class Town_Test {
 	
 	ServerMessagingSystem server_messaging_system;
 	ServerGameController server_game_controller;
+	Server_Messaging_System_Test_Utils server_messaging_system_test_utils;
 	Character character;
 	Town town;
 
@@ -28,8 +29,7 @@ class Town_Test {
 	void ask_what_to_do_works_for_cave_test() throws ClientDisconnectedException {
 		basic_town_test_setup();
 		String player_response = strings.Hotkeys.cave;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		Communication reply = town.ask_what_to_do();
 		
@@ -85,8 +85,7 @@ class Town_Test {
 		character.current_life = 1;
 		character.µ = CharacterOperations.return_missing_life(character);
 		String player_response = strings.Hotkeys.yes;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.rest();
 		
@@ -99,8 +98,7 @@ class Town_Test {
 		character.current_energy = 0;
 		character.µ = CharacterOperations.return_missing_energy(character);
 		String player_response = strings.Hotkeys.yes;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.rest();
 		
@@ -113,8 +111,7 @@ class Town_Test {
 		character.current_energy = 0;
 		character.µ = CharacterOperations.return_missing_energy(character);
 		String player_response = strings.Hotkeys.yes;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.rest();
 		
@@ -127,8 +124,7 @@ class Town_Test {
 		character.current_energy = 0;
 		character.µ = CharacterOperations.return_missing_energy(character);
 		String player_response = strings.Hotkeys.no;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.rest();
 		
@@ -140,8 +136,7 @@ class Town_Test {
 		basic_town_test_setup();
 		character.current_energy = 0;
 		String player_response = "";
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.rest();
 		
@@ -154,8 +149,7 @@ class Town_Test {
 		character.µ = Town.healing_kykli_cost;
 		int expected_healing_kykli_count = character.healing_kykli_count + 1;
 		String player_response = strings.Hotkeys.yes;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.buy_healing_kykli();
 		
@@ -168,8 +162,7 @@ class Town_Test {
 		character.µ = Town.healing_kykli_cost;
 		int expected_µ = character.µ - Town.healing_kykli_cost;
 		String player_response = strings.Hotkeys.yes;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.buy_healing_kykli();
 		
@@ -182,8 +175,7 @@ class Town_Test {
 		character.µ = Town.healing_kykli_cost;
 		int expected_µ = Town.healing_kykli_cost;
 		String player_response = strings.Hotkeys.no;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
 		
 		town.buy_healing_kykli();
 		
@@ -194,18 +186,65 @@ class Town_Test {
 	void buy_healing_kykli_cant_afford_should_not_increase_healing_kykli_count_test() throws ClientDisconnectedException {
 		basic_town_test_setup();
 		int expected_healing_kykli_count = character.healing_kykli_count;
-		String player_response = strings.Hotkeys.no;
-		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
-		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
 		
 		town.buy_healing_kykli();
 		
 		assertEquals(expected_healing_kykli_count, character.healing_kykli_count);
 	}
+
+	@Test
+	void buy_energy_water_should_increase_healing_kykli_count_by_one_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.energy_water_cost;
+		int expected_energy_water_count = character.energy_water_count + 1;
+		String player_response = strings.Hotkeys.yes;
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
+		
+		town.buy_energy_water();
+		
+		assertEquals(expected_energy_water_count, character.energy_water_count);
+	}
+
+	@Test
+	void buy_energy_water_should_subtract_µ_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.energy_water_cost;
+		int expected_µ = character.µ - Town.energy_water_cost;
+		String player_response = strings.Hotkeys.yes;
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
+		
+		town.buy_energy_water();
+		
+		assertEquals(expected_µ, character.µ);
+	}
+
+	@Test
+	void buy_energy_water_declining_should_not_subtract_µ_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.energy_water_cost;
+		int expected_µ = Town.energy_water_cost;
+		String player_response = strings.Hotkeys.no;
+		server_messaging_system_test_utils.prepare_single_answer_from_client(player_response);
+		
+		town.buy_energy_water();
+		
+		assertEquals(expected_µ, character.µ);
+	}
+
+	@Test
+	void buy_energy_water_cant_afford_should_not_increase_energy_water_count_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		int expected_energy_water_count = character.energy_water_count;
+		
+		town.buy_energy_water();
+		
+		assertEquals(expected_energy_water_count, character.energy_water_count);
+	}
 	
 	void basic_town_test_setup() {
 		server_messaging_system = mock(ServerMessagingSystem.class);
 		server_game_controller = mock(ServerGameController.class);
+		server_messaging_system_test_utils = new Server_Messaging_System_Test_Utils(server_messaging_system);
 		character = new Character();
 		town = new Town(server_game_controller, server_messaging_system, character);
 	}

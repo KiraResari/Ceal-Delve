@@ -13,16 +13,18 @@ public class Town_Strings {
 	
 	public static String cant_afford_rest = "You can't afford to rest. This would cost ";
 	public static String cant_afford_healing_kykli = "You can't afford to buy a Healing Kykli. One would cost ";
+	public static String cant_afford_energy_water = "You can't afford to buy some Energy Water. That would cost ";
 	public static String cant_afford_end_stub = "µ.";
 	public static String rest_ask1 = "Rest for ";
 	public static String rest_ask2 = "µ?";
 	public static String rest1 = "You rest for a bit.";
 	public static String rest2 = "Your Life and Energy are fully restored.";
-	public static String buy_healing_kykli1 = "Your bought a Healing Kykli (you now have ";
-	public static String buy_healing_kykli2 = ").";
-	public static String buy_healing_kykli_ask1 = "Do you want to buy one Healing Kykli for ";
-	public static String buy_healing_kykli_ask2 = "µ? (you currently have ";
-	public static String buy_healing_kykli_ask3 = ")";
+	public static String buy_healing_kykli = "Your bought a Healing Kykli. (you now have ";
+	public static String buy_healing_kykli_ask = "Do you want to buy one Healing Kykli for ";
+	public static String buy_energy_water = "Your bought some Energy Water (you now have ";
+	public static String buy_energy_water_ask = "Do you want to buy some Energy Water for ";
+	public static String buy_ask_price_and_current_stock = "µ? (you currently have ";
+	public static String closing_bracket = ")";
 	
 	public static String out_of_stock = "Sorry, but this item is currently out of stock.";
 	
