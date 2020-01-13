@@ -1,6 +1,6 @@
 package strings;
 
-public class DungeonExploration {
+public class Dungeon_Exploration_Strings {
 	public static String explore_towards_north = "You keep on exploring towards the north.";
 	public static String explore_towards_east = "You keep on exploring towards the east.";
 	public static String explore_towards_south = "You keep on exploring towards the south.";

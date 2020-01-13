@@ -97,28 +97,28 @@ public class DungeonRoom {
 
 	private void print_town_access_message() throws ClientDisconnectedException {
 		if(is_starting_room()) {
-			server_messaging_system.send_message_to_client(strings.DungeonExploration.town_access_starting_room, false);
+			server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.town_access_starting_room, false);
 		} else if(is_portal_room()) {
-			server_messaging_system.send_message_to_client(strings.DungeonExploration.town_access_portal, false);
+			server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.town_access_portal, false);
 		}
 	}
 
 	private void print_nothing_here_message() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.empty_cave, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.empty_cave, false);
 	}
 
 	private void trigger_looting() throws ClientDisconnectedException {
-		Communication reply = server_messaging_system.send_question_to_client(Question.construct_yes_no_question(strings.DungeonExploration.treasure_chest_find));
+		Communication reply = server_messaging_system.send_question_to_client(Question.construct_yes_no_question(strings.Dungeon_Exploration_Strings.treasure_chest_find));
 		if(reply.message.toUpperCase().equals(strings.Hotkeys.yes)) {
 			open_treasure_chest();
 		}else{
-			server_messaging_system.send_message_to_client(strings.DungeonExploration.treasure_chest_leave, false);
+			server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.treasure_chest_leave, false);
 		}
 		server_messaging_system.send_message_to_client("", true);
 	}
 
 	private void open_treasure_chest() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.treasure_chest_open, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.treasure_chest_open, false);
 		if(treasure_chest_is_trapped()) {
 			treasure_chest_explodes();
 		}
@@ -241,7 +241,7 @@ public class DungeonRoom {
 	}
 
 	public void print_visited_before_message() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.visited_before, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.visited_before, false);
 	}
 	
 	private void generate_random_room_description() {

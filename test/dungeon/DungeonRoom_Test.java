@@ -76,7 +76,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(1)).send_message_to_client(strings.DungeonExploration.visited_before, false);
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Dungeon_Exploration_Strings.visited_before, false);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(1)).send_message_to_client(strings.DungeonExploration.empty_cave, false);
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Dungeon_Exploration_Strings.empty_cave, false);
 	}
 
 	@Test
@@ -113,7 +113,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(1)).send_message_to_client(strings.DungeonExploration.treasure_chest_open, false);
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Dungeon_Exploration_Strings.treasure_chest_open, false);
 	}
 
 	@Test
@@ -127,7 +127,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(0)).send_message_to_client(strings.DungeonExploration.treasure_chest_open, false);
+		verify(server_messaging_system, times(0)).send_message_to_client(strings.Dungeon_Exploration_Strings.treasure_chest_open, false);
 	}
 
 	@Test
@@ -139,7 +139,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(1)).send_message_to_client(strings.DungeonExploration.town_access_starting_room, false);
+		verify(server_messaging_system, times(1)).send_message_to_client(strings.Dungeon_Exploration_Strings.town_access_starting_room, false);
 	}
 
 	@Test
@@ -151,7 +151,7 @@ class DungeonRoom_Test {
 		
 		dungeon_room.enter_room();
 		
-		verify(server_messaging_system, times(0)).send_message_to_client(strings.DungeonExploration.town_access_starting_room, false);
+		verify(server_messaging_system, times(0)).send_message_to_client(strings.Dungeon_Exploration_Strings.town_access_starting_room, false);
 	}
 
 	@Test

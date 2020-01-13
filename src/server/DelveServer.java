@@ -11,7 +11,7 @@ public class DelveServer {
 	
 	String text_buffer;
 	Socket client;
-	String version = "1.3";
+	String version = "1.4";
 	int port = 1337;
 	Server_Object_Stream server_object_stream;
 

@@ -147,6 +147,61 @@ class Town_Test {
 		
 		assertEquals(0, character.current_energy);
 	}
+
+	@Test
+	void buy_healing_kykli_should_increase_healing_kykli_count_by_one_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.healing_kykli_cost;
+		int expected_healing_kykli_count = character.healing_kykli_count + 1;
+		String player_response = strings.Hotkeys.yes;
+		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
+		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		
+		town.buy_healing_kykli();
+		
+		assertEquals(expected_healing_kykli_count, character.healing_kykli_count);
+	}
+
+	@Test
+	void buy_healing_kykli_should_subtract_µ_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.healing_kykli_cost;
+		int expected_µ = character.µ - Town.healing_kykli_cost;
+		String player_response = strings.Hotkeys.yes;
+		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
+		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		
+		town.buy_healing_kykli();
+		
+		assertEquals(expected_µ, character.µ);
+	}
+
+	@Test
+	void buy_healing_kykli_declining_should_not_subtract_µ_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		character.µ = Town.healing_kykli_cost;
+		int expected_µ = Town.healing_kykli_cost;
+		String player_response = strings.Hotkeys.no;
+		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
+		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		
+		town.buy_healing_kykli();
+		
+		assertEquals(expected_µ, character.µ);
+	}
+
+	@Test
+	void buy_healing_kykli_cant_afford_should_not_increase_healing_kykli_count_test() throws ClientDisconnectedException {
+		basic_town_test_setup();
+		int expected_healing_kykli_count = character.healing_kykli_count;
+		String player_response = strings.Hotkeys.no;
+		Communication reply_from_client_player_response = new Communication(CommunicationTypes.message, player_response);
+		when(server_messaging_system.send_question_to_client(any())).thenReturn(reply_from_client_player_response);
+		
+		town.buy_healing_kykli();
+		
+		assertEquals(expected_healing_kykli_count, character.healing_kykli_count);
+	}
 	
 	void basic_town_test_setup() {
 		server_messaging_system = mock(ServerMessagingSystem.class);

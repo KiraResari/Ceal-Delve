@@ -80,54 +80,54 @@ public class Dungeon {
 	}
 
 	private void go_to_town() throws ClientDisconnectedException {
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.go_to_town, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.go_to_town, false);
 		server_messaging_system.send_message_to_client("", true);
 		server_game_controller.town.enter();
 	}
 
 	private int move_west(int target_coordinate_east) throws ClientDisconnectedException {
 		target_coordinate_east --;
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.explore_towards_west, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.explore_towards_west, false);
 		return target_coordinate_east;
 	}
 
 	private int move_south(int target_coordinate_north) throws ClientDisconnectedException {
 		target_coordinate_north --;
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.explore_towards_south, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.explore_towards_south, false);
 		return target_coordinate_north;
 	}
 
 	private int move_east(int target_coordinate_east) throws ClientDisconnectedException {
 		target_coordinate_east ++;
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.explore_towards_east, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.explore_towards_east, false);
 		return target_coordinate_east;
 	}
 
 	private int move_north(int target_coordinate_north) throws ClientDisconnectedException {
 		target_coordinate_north ++;
-		server_messaging_system.send_message_to_client(strings.DungeonExploration.explore_towards_north, false);
+		server_messaging_system.send_message_to_client(strings.Dungeon_Exploration_Strings.explore_towards_north, false);
 		return target_coordinate_north;
 	}
 
 	public Communication ask_which_way_to_go() throws ClientDisconnectedException {
 		String question_message = construct_which_way_to_go_question_message();
 		List<QuestionOption> question_options = new ArrayList<QuestionOption>();
-		question_options.add(new QuestionOption(strings.DungeonExploration.north_capitalized, strings.Hotkeys.north));
-		question_options.add(new QuestionOption(strings.DungeonExploration.east_capitalized, strings.Hotkeys.east));
+		question_options.add(new QuestionOption(strings.Dungeon_Exploration_Strings.north_capitalized, strings.Hotkeys.north));
+		question_options.add(new QuestionOption(strings.Dungeon_Exploration_Strings.east_capitalized, strings.Hotkeys.east));
 		if(current_room.coordinate_north > 0) {
-			question_options.add(new QuestionOption(strings.DungeonExploration.south_capitalized, strings.Hotkeys.south));
+			question_options.add(new QuestionOption(strings.Dungeon_Exploration_Strings.south_capitalized, strings.Hotkeys.south));
 		}
 		if(current_room.coordinate_east > 0) {
-			question_options.add(new QuestionOption(strings.DungeonExploration.west_capitalized, strings.Hotkeys.west));
+			question_options.add(new QuestionOption(strings.Dungeon_Exploration_Strings.west_capitalized, strings.Hotkeys.west));
 		}
 		if(current_room.town_access_present) {
-			question_options.add(new QuestionOption(strings.DungeonExploration.return_to_town, strings.Hotkeys.town));
+			question_options.add(new QuestionOption(strings.Dungeon_Exploration_Strings.return_to_town, strings.Hotkeys.town));
 		}
 		Communication reply = server_messaging_system.send_question_to_client(Question.construct_question_with_custom_options(question_message, question_options));
 		return reply;
 	}
 	
 	private String construct_which_way_to_go_question_message() {
-		return strings.DungeonExploration.which_way_to_go_question_message_part1 + current_room.coordinate_north + strings.DungeonExploration.which_way_to_go_question_message_part2 + current_room.coordinate_east + ")";
+		return strings.Dungeon_Exploration_Strings.which_way_to_go_question_message_part1 + current_room.coordinate_north + strings.Dungeon_Exploration_Strings.which_way_to_go_question_message_part2 + current_room.coordinate_east + ")";
 	}
 }
