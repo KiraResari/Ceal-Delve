@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class DelveClient {
 	ObjectInputStream object_input_from_server;
 	ObjectOutputStream object_output_to_server;
 	Console console;
+	Client_Object_Stream client_object_stream;
 	
 	public static void main(String[] args) {
 		DelveClient delve_client = new DelveClient();
@@ -36,10 +38,7 @@ public class DelveClient {
 			ask_server_type();
 			while(true) {
 				try {
-					server_connection = new Socket(server_address, server_port);
-					ClientGameController game_controller = new ClientGameController(server_connection);
-					console.println("Client Version " + version);
-					game_controller.game_init();
+					connect_to_server();
 				}
 				catch (java.net.ConnectException e){
 					console.println("ERROR: Delve Server does not appear to be running; Attempted to connect to Server: " + server_address + " Port: " + server_port);
@@ -60,6 +59,14 @@ public class DelveClient {
 			e.printStackTrace();
 		}
 	}
+
+	private void connect_to_server() throws UnknownHostException, IOException, ServerDisconnectedException, ClassNotFoundException {
+		server_connection = new Socket(server_address, server_port);
+		client_object_stream = new Client_Object_Stream(server_connection);
+		ClientGameController game_controller = new ClientGameController(console, client_object_stream);
+		console.println("Client Version " + version);
+		game_controller.game_init();
+	}
 	
 	public void ask_server_type() throws IOException {
 		String reply;
@@ -71,7 +78,7 @@ public class DelveClient {
 		
 		question.print_question();
 		
-		reply = question.request_and_validate_local_user_reply(console.get_user_input());
+		reply = question.request_and_validate_local_user_reply(console.get_user_input_with_prompt());
 		
 		if(reply.toUpperCase().equals(strings.Hotkeys.no)) {
 			ask_server_address();
@@ -81,7 +88,7 @@ public class DelveClient {
 	public void ask_server_address() throws IOException {
 		console.println("Please enter the server IP address");
 		console.print("> ");
-		server_address = console.get_user_input();
+		server_address = console.get_user_input_with_prompt();
 	}
 	
 	public Boolean ask_change_server_type_question() throws IOException {
@@ -91,7 +98,7 @@ public class DelveClient {
 		
 		question.print_question();
 		
-		reply = question.request_and_validate_local_user_reply(console.get_user_input());
+		reply = question.request_and_validate_local_user_reply(console.get_user_input_with_prompt());
 		
 		if(reply.toUpperCase().equals(strings.Hotkeys.yes)) {
 			return true;

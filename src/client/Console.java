@@ -19,8 +19,12 @@ public class Console {
 		System.out.print(message);
 	}
 
-	public String get_user_input() throws IOException {
+	public String get_user_input_with_prompt() throws IOException {
 		print("> ");
+		return user_input.readLine();
+	}
+
+	public String get_user_input_without_prompt() throws IOException {
 		return user_input.readLine();
 	}
 }

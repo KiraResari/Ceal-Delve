@@ -16,7 +16,7 @@ class DelveClient_Test {
 	@Test
 	void ask_server_type_uses_local_server_for_reply_local_test() throws IOException {
 		setup_client_test_environment();
-		when(console.get_user_input()).thenReturn(strings.Hotkeys.local_machine);
+		when(console.get_user_input_with_prompt()).thenReturn(strings.Hotkeys.local_machine);
 		String expected_server_address = "127.0.0.1";
 		
 		delve_client.ask_server_type();
@@ -28,7 +28,7 @@ class DelveClient_Test {
 	void ask_server_type_uses_network_server_for_reply_network_test() throws IOException {
 		setup_client_test_environment();
 		String expected_server_address = "999.999.999.999";
-		when(console.get_user_input())
+		when(console.get_user_input_with_prompt())
 			.thenReturn(strings.Hotkeys.network)
 			.thenReturn(expected_server_address);
 		
@@ -40,7 +40,7 @@ class DelveClient_Test {
 	@Test
 	void ask_change_server_type_question_should_return_true_for_yes_test() throws IOException {
 		setup_client_test_environment();
-		when(console.get_user_input()).thenReturn(strings.Hotkeys.yes);
+		when(console.get_user_input_with_prompt()).thenReturn(strings.Hotkeys.yes);
 		
 		Boolean reply = delve_client.ask_change_server_type_question();
 		
@@ -50,7 +50,7 @@ class DelveClient_Test {
 	@Test
 	void ask_change_server_type_question_should_return_false_for_no_test() throws IOException {
 		setup_client_test_environment();
-		when(console.get_user_input()).thenReturn(strings.Hotkeys.no);
+		when(console.get_user_input_with_prompt()).thenReturn(strings.Hotkeys.no);
 		
 		Boolean reply = delve_client.ask_change_server_type_question();
 		
